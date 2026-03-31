@@ -131,8 +131,8 @@ export default function GoalsPage() {
           <div className="flex gap-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="w-72 flex-shrink-0 space-y-2">
-                <div className="h-10 bg-zinc-800 rounded-lg animate-pulse" />
-                {[1, 2, 3].map(j => <div key={j} className="h-24 bg-zinc-800 rounded-lg animate-pulse" />)}
+                <div className="h-10 bg-[#F0EFE9] rounded-lg animate-pulse" />
+                {[1, 2, 3].map(j => <div key={j} className="h-24 bg-[#F0EFE9] rounded-lg animate-pulse" />)}
               </div>
             ))}
           </div>

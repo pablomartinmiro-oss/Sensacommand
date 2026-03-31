@@ -80,14 +80,14 @@ export function Modal({
       onClick={handleBackdropClick}
       className={cn(
         'fixed inset-0 z-50 flex items-center justify-center p-4',
-        'bg-black/60 backdrop-blur-sm',
+        'bg-black/30 backdrop-blur-sm',
         'transition-opacity duration-200',
         visible ? 'opacity-100' : 'opacity-0',
       )}
     >
       <div
         className={cn(
-          'relative w-full rounded-xl border border-zinc-800 bg-[#0f0f15] shadow-2xl',
+          'relative w-full rounded-xl border border-[#E8E4DD] bg-white shadow-2xl',
           'transform transition-all duration-200',
           visible
             ? 'translate-y-0 scale-100 opacity-100'
@@ -98,11 +98,11 @@ export function Modal({
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
-            <h2 className="text-lg font-semibold text-zinc-100">{title}</h2>
+          <div className="flex items-center justify-between border-b border-[#E8E4DD] px-6 py-4">
+            <h2 className="text-lg font-semibold text-[#1A1A2E]">{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-md p-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors"
+              className="rounded-md p-1 text-[#9CA3AF] hover:bg-[#F0EFE9] hover:text-[#1A1A2E] transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
@@ -113,7 +113,7 @@ export function Modal({
         {!title && (
           <button
             onClick={onClose}
-            className="absolute right-3 top-3 rounded-md p-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300 transition-colors"
+            className="absolute right-3 top-3 rounded-md p-1 text-[#9CA3AF] hover:bg-[#F0EFE9] hover:text-[#1A1A2E] transition-colors"
           >
             <X className="h-5 w-5" />
           </button>

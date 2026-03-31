@@ -277,7 +277,7 @@ export function ComposeModal({ open, onClose, onSent }: ComposeModalProps) {
                 key={v}
                 type="button"
                 onClick={() => setBody((prev) => prev + v)}
-                className="px-2 py-0.5 text-xs rounded bg-zinc-800 text-amber-400 hover:bg-zinc-700 transition-colors"
+                className="px-2 py-0.5 text-xs rounded bg-[#F0EFE9] text-amber-400 hover:bg-[#E8E4DD] transition-colors"
               >
                 {v}
               </button>
@@ -287,16 +287,16 @@ export function ComposeModal({ open, onClose, onSent }: ComposeModalProps) {
 
         {/* Preview */}
         {previewBody && (
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500 mb-2">
+          <div className="rounded-lg border border-[#E8E4DD] bg-white p-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF] mb-2">
               Preview
             </p>
-            <p className="text-sm text-zinc-300 whitespace-pre-wrap">{previewBody}</p>
+            <p className="text-sm text-[#374151] whitespace-pre-wrap">{previewBody}</p>
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-800">
+        <div className="flex flex-wrap gap-2 pt-2 border-t border-[#E8E4DD]">
           {channel === 'WHATSAPP' ? (
             <>
               <Button

@@ -39,8 +39,8 @@ function ChartTooltipContent({
   const total = payload.reduce((sum, entry) => sum + entry.value, 0)
 
   return (
-    <div className="rounded-lg border border-zinc-700 bg-[#0f0f15] p-3 shadow-xl">
-      <p className="mb-2 text-xs font-medium text-zinc-400">{label}</p>
+    <div className="rounded-lg border border-[#D1D5DB] bg-white p-3 shadow-xl">
+      <p className="mb-2 text-xs font-medium text-[#6B7280]">{label}</p>
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center justify-between gap-4 text-xs">
           <span className="flex items-center gap-1.5">
@@ -48,12 +48,12 @@ function ChartTooltipContent({
               className="inline-block h-2.5 w-2.5 rounded-sm"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-zinc-300">{entry.name}</span>
+            <span className="text-[#374151]">{entry.name}</span>
           </span>
-          <span className="font-medium text-zinc-100">{formatCurrency(entry.value)}</span>
+          <span className="font-medium text-[#1A1A2E]">{formatCurrency(entry.value)}</span>
         </div>
       ))}
-      <div className="mt-2 border-t border-zinc-700 pt-2 text-xs font-semibold text-zinc-100">
+      <div className="mt-2 border-t border-[#D1D5DB] pt-2 text-xs font-semibold text-[#1A1A2E]">
         Total: {formatCurrency(total)}
       </div>
     </div>
@@ -82,15 +82,15 @@ export function RevenueChart() {
 
   if (loading || !data) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <SkeletonCard lines={6} className="border-0 p-0" />
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
-      <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">
+    <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
+      <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-[#9CA3AF]">
         Revenue — Last 30 Days
       </h3>
       <div className="h-72">

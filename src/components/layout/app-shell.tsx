@@ -25,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center">
         <div className="text-amber-500 text-lg font-heading">Loading...</div>
       </div>
     )
@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0f]">
+    <div className="flex min-h-screen bg-[#F8F7F4]">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen pb-16 lg:pb-0">
         {children}

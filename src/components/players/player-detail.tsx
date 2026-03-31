@@ -118,7 +118,7 @@ export function PlayerDetail({ player, onUpdate }: PlayerDetailProps) {
       {/* Actions row */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-500">Status:</span>
+          <span className="text-xs text-[#9CA3AF]">Status:</span>
           <Select
             options={STATUS_OPTIONS}
             value={statusValue}
@@ -128,7 +128,7 @@ export function PlayerDetail({ player, onUpdate }: PlayerDetailProps) {
           />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-500">Membership:</span>
+          <span className="text-xs text-[#9CA3AF]">Membership:</span>
           <Select
             options={MEMBERSHIP_OPTIONS}
             value={membershipValue}
@@ -146,7 +146,7 @@ export function PlayerDetail({ player, onUpdate }: PlayerDetailProps) {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-zinc-800">
+      <div className="border-b border-[#E8E4DD]">
         <div className="flex gap-0 overflow-x-auto">
           {TABS.map((tab) => (
             <button
@@ -156,18 +156,18 @@ export function PlayerDetail({ player, onUpdate }: PlayerDetailProps) {
                 'px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px',
                 activeTab === tab
                   ? 'border-amber-500 text-amber-400'
-                  : 'border-transparent text-zinc-500 hover:text-zinc-300 hover:border-zinc-600'
+                  : 'border-transparent text-[#9CA3AF] hover:text-[#1A1A2E] hover:border-[#D1D5DB]'
               )}
             >
               {tab}
               {tab === 'Visit History' && (
-                <span className="ml-1.5 text-xs text-zinc-600">({player.visits.length})</span>
+                <span className="ml-1.5 text-xs text-[#9CA3AF]">({player.visits.length})</span>
               )}
               {tab === 'Payment History' && (
-                <span className="ml-1.5 text-xs text-zinc-600">({player.payments.length})</span>
+                <span className="ml-1.5 text-xs text-[#9CA3AF]">({player.payments.length})</span>
               )}
               {tab === 'Messages' && (
-                <span className="ml-1.5 text-xs text-zinc-600">({player.messages.length})</span>
+                <span className="ml-1.5 text-xs text-[#9CA3AF]">({player.messages.length})</span>
               )}
             </button>
           ))}
@@ -197,7 +197,7 @@ export function PlayerDetail({ player, onUpdate }: PlayerDetailProps) {
 function VisitHistoryTab({ visits }: { visits: PlayerWithRelations['visits'] }) {
   if (visits.length === 0) {
     return (
-      <div className="text-center text-zinc-500 py-12">
+      <div className="text-center text-[#9CA3AF] py-12">
         No visits recorded
       </div>
     )
@@ -228,16 +228,16 @@ function VisitHistoryTab({ visits }: { visits: PlayerWithRelations['visits'] }) 
 
           return (
             <TableRow key={visit.id}>
-              <TableCell className="font-medium text-zinc-200">
+              <TableCell className="font-medium text-[#1A1A2E]">
                 {formatDate(visit.date)}
               </TableCell>
               <TableCell>Court {visit.courtNumber}</TableCell>
               <TableCell>{durationStr}</TableCell>
-              <TableCell className="text-right font-medium text-zinc-200">
+              <TableCell className="text-right font-medium text-[#1A1A2E]">
                 {formatCurrencyDecimal(Number(visit.amountPaid))}
               </TableCell>
               <TableCell>
-                <span className="text-xs text-zinc-400">
+                <span className="text-xs text-[#6B7280]">
                   {VISIT_TYPE_LABELS[visit.type] || visit.type}
                 </span>
               </TableCell>
@@ -260,7 +260,7 @@ function PaymentHistoryTab({
 }) {
   if (payments.length === 0) {
     return (
-      <div className="text-center text-zinc-500 py-12">
+      <div className="text-center text-[#9CA3AF] py-12">
         No payments recorded
       </div>
     )
@@ -280,21 +280,21 @@ function PaymentHistoryTab({
       <TableBody>
         {payments.map((payment: PlayerWithRelations['payments'][number]) => (
           <TableRow key={payment.id}>
-            <TableCell className="font-medium text-zinc-200">
+            <TableCell className="font-medium text-[#1A1A2E]">
               {formatDate(payment.date)}
             </TableCell>
-            <TableCell className="text-right font-medium text-zinc-200">
+            <TableCell className="text-right font-medium text-[#1A1A2E]">
               {formatCurrencyDecimal(Number(payment.amount))}
             </TableCell>
             <TableCell>
-              <span className="text-xs text-zinc-400">
+              <span className="text-xs text-[#6B7280]">
                 {PAYMENT_TYPE_LABELS[payment.type] || payment.type}
               </span>
             </TableCell>
-            <TableCell className="text-zinc-400 text-xs capitalize">
+            <TableCell className="text-[#6B7280] text-xs capitalize">
               {payment.method.toLowerCase().replace('_', ' ')}
             </TableCell>
-            <TableCell className="text-zinc-500 max-w-[200px] truncate">
+            <TableCell className="text-[#9CA3AF] max-w-[200px] truncate">
               {payment.description || '-'}
             </TableCell>
           </TableRow>
@@ -316,8 +316,8 @@ function MessagesTab({
   if (messages.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 gap-2">
-        <MessageSquare className="h-8 w-8 text-zinc-700" />
-        <p className="text-sm text-zinc-500">No messages yet</p>
+        <MessageSquare className="h-8 w-8 text-[#D1D5DB]" />
+        <p className="text-sm text-[#9CA3AF]">No messages yet</p>
       </div>
     )
   }
@@ -336,10 +336,10 @@ function MessagesTab({
       <TableBody>
         {messages.map((msg: PlayerWithRelations['messages'][number]) => (
           <TableRow key={msg.id}>
-            <TableCell className="font-medium text-zinc-200">
+            <TableCell className="font-medium text-[#1A1A2E]">
               {formatDateTime(msg.createdAt)}
             </TableCell>
-            <TableCell className="text-zinc-400 text-xs capitalize">
+            <TableCell className="text-[#6B7280] text-xs capitalize">
               {msg.channel.toLowerCase().replace('_', ' ')}
             </TableCell>
             <TableCell>
@@ -354,14 +354,14 @@ function MessagesTab({
                 {msg.direction === 'OUTBOUND' ? 'Sent' : 'Received'}
               </span>
             </TableCell>
-            <TableCell className="text-zinc-300 max-w-[200px] truncate">
+            <TableCell className="text-[#374151] max-w-[200px] truncate">
               {msg.subject || msg.body.slice(0, 50)}
             </TableCell>
             <TableCell>
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
-                  MESSAGE_STATUS_COLORS[msg.status] || 'bg-zinc-500/20 text-zinc-400'
+                  MESSAGE_STATUS_COLORS[msg.status] || 'bg-zinc-500/20 text-[#6B7280]'
                 )}
               >
                 {msg.status.charAt(0) + msg.status.slice(1).toLowerCase()}

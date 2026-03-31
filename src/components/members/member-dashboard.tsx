@@ -119,17 +119,17 @@ export function MemberDashboard() {
       {/* Middle section: Churn Risk + Upcoming Renewals */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Churn Risk List */}
-        <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+        <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="h-4 w-4 text-red-400" />
-            <h3 className="text-sm font-semibold text-zinc-200">Churn Risk</h3>
+            <h3 className="text-sm font-semibold text-[#1A1A2E]">Churn Risk</h3>
             <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500/20 px-1.5 text-xs font-medium text-red-400">
               {churnRiskMembers.length}
             </span>
           </div>
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
             {churnRiskMembers.length === 0 ? (
-              <p className="text-xs text-zinc-600 text-center py-6">
+              <p className="text-xs text-[#9CA3AF] text-center py-6">
                 No members at risk of churning
               </p>
             ) : (
@@ -141,10 +141,10 @@ export function MemberDashboard() {
         </div>
 
         {/* Upcoming Renewals */}
-        <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+        <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
           <div className="flex items-center gap-2 mb-4">
             <Calendar className="h-4 w-4 text-amber-400" />
-            <h3 className="text-sm font-semibold text-zinc-200">
+            <h3 className="text-sm font-semibold text-[#1A1A2E]">
               Upcoming Renewals
             </h3>
             <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500/20 px-1.5 text-xs font-medium text-amber-400">
@@ -153,7 +153,7 @@ export function MemberDashboard() {
           </div>
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
             {upcomingRenewals.length === 0 ? (
-              <p className="text-xs text-zinc-600 text-center py-6">
+              <p className="text-xs text-[#9CA3AF] text-center py-6">
                 No renewals in the next 14 days
               </p>
             ) : (
@@ -166,11 +166,11 @@ export function MemberDashboard() {
       </div>
 
       {/* Member Table */}
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Crown className="h-4 w-4 text-amber-400" />
-            <h3 className="text-sm font-semibold text-zinc-200">All Members</h3>
+            <h3 className="text-sm font-semibold text-[#1A1A2E]">All Members</h3>
           </div>
           <div className="flex gap-1.5">
             {['ALL', 'STANDARD', 'UNLIMITED'].map((tier) => (
@@ -184,7 +184,7 @@ export function MemberDashboard() {
                   'rounded-md px-3 py-1 text-xs font-medium transition-colors',
                   tierFilter === tier
                     ? 'bg-amber-500/20 text-amber-400'
-                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-300'
+                    : 'bg-[#F0EFE9] text-[#6B7280] hover:bg-[#E8E4DD] hover:text-[#1A1A2E]'
                 )}
               >
                 {tier === 'ALL' ? 'All' : MEMBERSHIP_LABELS[tier]}
@@ -207,7 +207,7 @@ export function MemberDashboard() {
           <TableBody>
             {members.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-zinc-600">
+                <TableCell colSpan={6} className="text-center py-8 text-[#9CA3AF]">
                   No members found
                 </TableCell>
               </TableRow>
@@ -226,21 +226,21 @@ export function MemberDashboard() {
 function MemberTableRow({ member }: { member: EnrichedMember }) {
   return (
     <TableRow
-      className="cursor-pointer hover:bg-zinc-800/60"
+      className="cursor-pointer hover:bg-[#F0EFE9]/60"
       onClick={() => {
         window.location.href = `/players/${member.id}`
       }}
     >
       <TableCell>
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-xs font-semibold text-amber-400">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F0EFE9] text-xs font-semibold text-amber-400">
             {getInitials(member.firstName, member.lastName)}
           </div>
           <div>
-            <p className="text-sm font-medium text-zinc-100">
+            <p className="text-sm font-medium text-[#1A1A2E]">
               {member.firstName} {member.lastName}
             </p>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-[#9CA3AF]">
               {member.email || member.phone || ''}
             </p>
           </div>
@@ -265,18 +265,18 @@ function MemberTableRow({ member }: { member: EnrichedMember }) {
         <span
           className={cn(
             'text-sm',
-            member.isChurnRisk ? 'text-red-400' : 'text-zinc-300'
+            member.isChurnRisk ? 'text-red-400' : 'text-[#374151]'
           )}
         >
           {member.visitsThisMonth}
         </span>
-        <span className="text-xs text-zinc-600 ml-1">
+        <span className="text-xs text-[#9CA3AF] ml-1">
           (avg {member.avgVisitsPerMonth})
         </span>
       </TableCell>
       <TableCell>
         {member.daysSinceLastVisit === 999 ? (
-          <span className="text-zinc-600">Never</span>
+          <span className="text-[#9CA3AF]">Never</span>
         ) : member.daysSinceLastVisit === 0 ? (
           <span className="text-emerald-400">Today</span>
         ) : (
@@ -286,7 +286,7 @@ function MemberTableRow({ member }: { member: EnrichedMember }) {
                 ? 'text-red-400'
                 : member.daysSinceLastVisit >= 7
                   ? 'text-amber-400'
-                  : 'text-zinc-300'
+                  : 'text-[#374151]'
             )}
           >
             {member.daysSinceLastVisit}d ago

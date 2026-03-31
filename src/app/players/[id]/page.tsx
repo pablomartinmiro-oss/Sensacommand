@@ -96,7 +96,7 @@ export default function PlayerDetailPage() {
           <span
             className={cn(
               'inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium',
-              STATUS_COLORS[player.status] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30'
+              STATUS_COLORS[player.status] || 'bg-zinc-500/20 text-[#6B7280] border-zinc-500/30'
             )}
           >
             {STATUS_LABELS[player.status] || player.status}
@@ -104,16 +104,16 @@ export default function PlayerDetailPage() {
           <span
             className={cn(
               'inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium',
-              MEMBERSHIP_COLORS[player.membershipType] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30'
+              MEMBERSHIP_COLORS[player.membershipType] || 'bg-zinc-500/20 text-[#6B7280] border-zinc-500/30'
             )}
           >
             {MEMBERSHIP_LABELS[player.membershipType] || player.membershipType}
           </span>
           {player.email && (
-            <span className="text-xs text-zinc-500">{player.email}</span>
+            <span className="text-xs text-[#9CA3AF]">{player.email}</span>
           )}
           {player.phone && (
-            <span className="text-xs text-zinc-500">{player.phone}</span>
+            <span className="text-xs text-[#9CA3AF]">{player.phone}</span>
           )}
         </div>
 

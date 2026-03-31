@@ -43,13 +43,13 @@ export function GoalFilters({
     <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
       {/* Search */}
       <div className="relative flex-1 min-w-[200px]">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
         <input
           type="text"
           placeholder="Search goals..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full h-9 pl-9 pr-3 rounded-lg border border-zinc-700 bg-zinc-900/60 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+          className="w-full h-9 pl-9 pr-3 rounded-lg border border-[#D1D5DB] bg-white text-sm text-[#1A1A2E] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
         />
       </div>
 
@@ -57,7 +57,7 @@ export function GoalFilters({
       <select
         value={assigneeId}
         onChange={(e) => onAssigneeChange(e.target.value)}
-        className="h-9 rounded-lg border border-zinc-700 bg-zinc-900/60 px-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        className="h-9 rounded-lg border border-[#D1D5DB] bg-white px-2 text-sm text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
       >
         <option value="">All Assignees</option>
         {teamMembers.map((m) => (
@@ -69,7 +69,7 @@ export function GoalFilters({
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className="h-9 rounded-lg border border-zinc-700 bg-zinc-900/60 px-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        className="h-9 rounded-lg border border-[#D1D5DB] bg-white px-2 text-sm text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
       >
         <option value="">All Categories</option>
         {categories.map((c) => (
@@ -81,7 +81,7 @@ export function GoalFilters({
       <select
         value={priority}
         onChange={(e) => onPriorityChange(e.target.value)}
-        className="h-9 rounded-lg border border-zinc-700 bg-zinc-900/60 px-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+        className="h-9 rounded-lg border border-[#D1D5DB] bg-white px-2 text-sm text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
       >
         <option value="">All Priorities</option>
         <option value="HIGH">High</option>
@@ -95,7 +95,7 @@ export function GoalFilters({
         <select
           value={status}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="h-9 rounded-lg border border-zinc-700 bg-zinc-900/60 px-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+          className="h-9 rounded-lg border border-[#D1D5DB] bg-white px-2 text-sm text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
         >
           <option value="">All Statuses</option>
           {Object.entries(GOAL_STATUS_LABELS).map(([k, v]) => (
@@ -107,18 +107,18 @@ export function GoalFilters({
       {/* My Goals quick filter */}
       <button
         onClick={onMyGoals}
-        className="h-9 px-3 rounded-lg border border-zinc-700 bg-zinc-900/60 text-sm text-zinc-300 hover:text-amber-400 hover:border-amber-500/50 transition-colors"
+        className="h-9 px-3 rounded-lg border border-[#D1D5DB] bg-white text-sm text-[#374151] hover:text-amber-400 hover:border-amber-500/50 transition-colors"
       >
         My Goals
       </button>
 
       {/* View toggle */}
-      <div className="flex items-center border border-zinc-700 rounded-lg overflow-hidden">
+      <div className="flex items-center border border-[#D1D5DB] rounded-lg overflow-hidden">
         <button
           onClick={() => onViewChange('kanban')}
           className={cn(
             'p-2 transition-colors',
-            view === 'kanban' ? 'bg-amber-500/20 text-amber-400' : 'text-zinc-500 hover:text-zinc-300'
+            view === 'kanban' ? 'bg-amber-500/20 text-amber-400' : 'text-[#9CA3AF] hover:text-[#1A1A2E]'
           )}
         >
           <LayoutGrid className="w-4 h-4" />
@@ -127,7 +127,7 @@ export function GoalFilters({
           onClick={() => onViewChange('table')}
           className={cn(
             'p-2 transition-colors',
-            view === 'table' ? 'bg-amber-500/20 text-amber-400' : 'text-zinc-500 hover:text-zinc-300'
+            view === 'table' ? 'bg-amber-500/20 text-amber-400' : 'text-[#9CA3AF] hover:text-[#1A1A2E]'
           )}
         >
           <Table2 className="w-4 h-4" />

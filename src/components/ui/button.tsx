@@ -8,11 +8,11 @@ const variantStyles = {
   primary:
     'bg-amber-500 text-black hover:bg-amber-400 active:bg-amber-600 focus-visible:ring-amber-500/50',
   secondary:
-    'bg-zinc-700 text-zinc-100 hover:bg-zinc-600 active:bg-zinc-800 focus-visible:ring-zinc-500/50',
+    'bg-[#E8E4DD] text-[#1A1A2E] hover:bg-[#E8E4DD] active:bg-[#E8E4DD] focus-visible:ring-[#D1D5DB]/50',
   danger:
-    'bg-red-600 text-white hover:bg-red-500 active:bg-red-700 focus-visible:ring-red-500/50',
+    'bg-red-600 text-[#1A1A2E] hover:bg-red-500 active:bg-red-700 focus-visible:ring-red-500/50',
   ghost:
-    'bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 active:bg-zinc-700 focus-visible:ring-zinc-500/50',
+    'bg-transparent text-[#374151] hover:bg-[#F0EFE9] hover:text-[#1A1A2E] active:bg-[#E8E4DD] focus-visible:ring-zinc-500/50',
 } as const
 
 const sizeStyles = {

@@ -56,7 +56,7 @@ export function MobileNav() {
       {showMore && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
             onClick={() => setShowMore(false)}
           />
           <div className="absolute bottom-16 left-0 right-0 bg-brand-card border-t border-brand-border rounded-t-2xl p-4">
@@ -73,7 +73,7 @@ export function MobileNav() {
                       'flex flex-col items-center gap-1.5 p-3 rounded-xl text-xs transition-colors',
                       isActive
                         ? 'bg-amber-500/10 text-amber-500'
-                        : 'text-brand-muted hover:text-white hover:bg-brand-border/50'
+                        : 'text-brand-muted hover:text-[#1A1A2E] hover:bg-[#F0EFE9]'
                     )}
                   >
                     {Icon && <Icon className="w-5 h-5" />}

@@ -58,24 +58,24 @@ export function LeadCard({ lead, onChangeStatus, onSendMessage }: LeadCardProps)
   const statusActions = nextStatuses[player.status] || []
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-[#0f0f15] p-3 space-y-3 hover:border-zinc-700 transition-colors cursor-grab active:cursor-grabbing">
+    <div className="rounded-lg border border-[#E8E4DD] bg-white p-3 space-y-3 hover:border-[#D1D5DB] transition-colors cursor-grab active:cursor-grabbing">
       {/* Header: Avatar + Name */}
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-xs font-semibold text-amber-400">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F0EFE9] text-xs font-semibold text-amber-400">
           {getInitials(player.firstName, player.lastName)}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-zinc-100 truncate">
+          <p className="text-sm font-medium text-[#1A1A2E] truncate">
             {player.firstName} {player.lastName}
           </p>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-[#9CA3AF]">
             {player.email || player.phone || 'No contact info'}
           </p>
         </div>
       </div>
 
       {/* Visit info */}
-      <div className="flex items-center justify-between text-xs text-zinc-400">
+      <div className="flex items-center justify-between text-xs text-[#6B7280]">
         <span className="flex items-center gap-1">
           <Eye className="h-3 w-3" />
           {visitCount} visit{visitCount !== 1 ? 's' : ''}
@@ -93,7 +93,7 @@ export function LeadCard({ lead, onChangeStatus, onSendMessage }: LeadCardProps)
 
       {/* Last visit date */}
       {lastVisit && (
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-[#9CA3AF]">
           Last visit: {formatDate(lastVisit)}
         </p>
       )}
@@ -101,7 +101,7 @@ export function LeadCard({ lead, onChangeStatus, onSendMessage }: LeadCardProps)
       {/* Score bar */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-zinc-500">Score</span>
+          <span className="text-xs text-[#9CA3AF]">Score</span>
           <span className={cn('text-xs font-semibold', getScoreTextColor(score))}>
             {score}
           </span>
@@ -118,7 +118,7 @@ export function LeadCard({ lead, onChangeStatus, onSendMessage }: LeadCardProps)
       <div className="flex items-center gap-1.5 pt-1">
         <button
           onClick={() => onSendMessage(player.id)}
-          className="flex items-center gap-1 rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors"
+          className="flex items-center gap-1 rounded-md bg-[#F0EFE9] px-2 py-1 text-xs text-[#374151] hover:bg-[#E8E4DD] hover:text-[#1A1A2E] transition-colors"
           title="Send message"
         >
           <MessageSquare className="h-3 w-3" />
@@ -128,7 +128,7 @@ export function LeadCard({ lead, onChangeStatus, onSendMessage }: LeadCardProps)
           <button
             key={action.value}
             onClick={() => onChangeStatus(player.id, action.value)}
-            className="flex items-center gap-1 rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-300 hover:bg-amber-500/20 hover:text-amber-400 transition-colors"
+            className="flex items-center gap-1 rounded-md bg-[#F0EFE9] px-2 py-1 text-xs text-[#374151] hover:bg-amber-500/20 hover:text-amber-400 transition-colors"
           >
             <ArrowRight className="h-3 w-3" />
             {action.label}

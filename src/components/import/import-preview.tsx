@@ -101,8 +101,8 @@ export function ImportPreview({ csvText, fileName }: ImportPreviewProps) {
     <div className="space-y-4">
       {/* File info + Parse button */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-zinc-400">
-          File: <span className="text-zinc-200">{fileName}</span>
+        <p className="text-sm text-[#6B7280]">
+          File: <span className="text-[#1A1A2E]">{fileName}</span>
         </p>
         <Button
           size="sm"
@@ -119,23 +119,23 @@ export function ImportPreview({ csvText, fileName }: ImportPreviewProps) {
         <>
           {/* Summary */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="rounded-lg border border-zinc-800 bg-[#0f0f15] p-4 text-center">
-              <p className="text-2xl font-heading font-bold text-zinc-100">
+            <div className="rounded-lg border border-[#E8E4DD] bg-white p-4 text-center">
+              <p className="text-2xl font-heading font-bold text-[#1A1A2E]">
                 {preview.totalRows}
               </p>
-              <p className="text-xs text-zinc-500 mt-1">Total Rows</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">Total Rows</p>
             </div>
             <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4 text-center">
               <p className="text-2xl font-heading font-bold text-emerald-400">
                 {preview.validRows}
               </p>
-              <p className="text-xs text-zinc-500 mt-1">Valid Rows</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">Valid Rows</p>
             </div>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-center">
               <p className="text-2xl font-heading font-bold text-amber-400">
                 {preview.existingPlayerCount}
               </p>
-              <p className="text-xs text-zinc-500 mt-1">Existing Players</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">Existing Players</p>
             </div>
           </div>
 
@@ -184,16 +184,16 @@ export function ImportPreview({ csvText, fileName }: ImportPreviewProps) {
                         hasErrors && 'bg-red-500/5',
                       )}
                     >
-                      <TableCell className="text-xs text-zinc-500">
+                      <TableCell className="text-xs text-[#9CA3AF]">
                         {idx + 1}
                       </TableCell>
-                      <TableCell className="font-medium text-zinc-200">
+                      <TableCell className="font-medium text-[#1A1A2E]">
                         {row.firstName} {row.lastName}
                       </TableCell>
                       <TableCell
                         className={cn(
                           'text-xs',
-                          row.exists ? 'text-amber-400' : 'text-zinc-400',
+                          row.exists ? 'text-amber-400' : 'text-[#6B7280]',
                         )}
                       >
                         {row.email || '--'}
@@ -201,7 +201,7 @@ export function ImportPreview({ csvText, fileName }: ImportPreviewProps) {
                           <AlertTriangle className="w-3 h-3 inline ml-1 text-amber-400" />
                         )}
                       </TableCell>
-                      <TableCell className="text-xs text-zinc-400">
+                      <TableCell className="text-xs text-[#6B7280]">
                         {row.phone || '--'}
                       </TableCell>
                       <TableCell>{row.courtNumber}</TableCell>
@@ -255,28 +255,28 @@ export function ImportPreview({ csvText, fileName }: ImportPreviewProps) {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <p className="text-2xl font-heading font-bold text-zinc-100">
+              <p className="text-2xl font-heading font-bold text-[#1A1A2E]">
                 {result.playersCreated}
               </p>
-              <p className="text-xs text-zinc-500">Players Created</p>
+              <p className="text-xs text-[#9CA3AF]">Players Created</p>
             </div>
             <div>
-              <p className="text-2xl font-heading font-bold text-zinc-100">
+              <p className="text-2xl font-heading font-bold text-[#1A1A2E]">
                 {result.playersUpdated}
               </p>
-              <p className="text-xs text-zinc-500">Players Matched</p>
+              <p className="text-xs text-[#9CA3AF]">Players Matched</p>
             </div>
             <div>
-              <p className="text-2xl font-heading font-bold text-zinc-100">
+              <p className="text-2xl font-heading font-bold text-[#1A1A2E]">
                 {result.visitsCreated}
               </p>
-              <p className="text-xs text-zinc-500">Visits Created</p>
+              <p className="text-xs text-[#9CA3AF]">Visits Created</p>
             </div>
             <div>
-              <p className="text-2xl font-heading font-bold text-zinc-100">
+              <p className="text-2xl font-heading font-bold text-[#1A1A2E]">
                 {result.paymentsCreated}
               </p>
-              <p className="text-xs text-zinc-500">Payments Created</p>
+              <p className="text-xs text-[#9CA3AF]">Payments Created</p>
             </div>
           </div>
           {result.errors.length > 0 && (
@@ -291,7 +291,7 @@ export function ImportPreview({ csvText, fileName }: ImportPreviewProps) {
       {loadingImport && (
         <div className="flex items-center justify-center gap-2 py-8">
           <Loader2 className="w-5 h-5 text-amber-500 animate-spin" />
-          <p className="text-sm text-zinc-400">Importing data...</p>
+          <p className="text-sm text-[#6B7280]">Importing data...</p>
         </div>
       )}
     </div>

@@ -1,16 +1,16 @@
 export const STATUS_COLORS: Record<string, string> = {
-  NEW: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  ACTIVE: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-  HOT_LEAD: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-  COLD_LEAD: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-  CONVERTED: 'bg-green-500/20 text-green-400 border-green-500/30',
-  CHURNED: 'bg-red-500/20 text-red-400 border-red-500/30',
+  NEW: 'bg-blue-50 text-blue-700 border-blue-200',
+  ACTIVE: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  HOT_LEAD: 'bg-amber-50 text-amber-700 border-amber-200',
+  COLD_LEAD: 'bg-slate-100 text-slate-600 border-slate-200',
+  CONVERTED: 'bg-green-50 text-green-700 border-green-200',
+  CHURNED: 'bg-red-50 text-red-700 border-red-200',
 }
 
 export const MEMBERSHIP_COLORS: Record<string, string> = {
-  NONE: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-  STANDARD: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  UNLIMITED: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+  NONE: 'bg-slate-100 text-slate-600 border-slate-200',
+  STANDARD: 'bg-blue-50 text-blue-700 border-blue-200',
+  UNLIMITED: 'bg-amber-50 text-amber-700 border-amber-200',
 }
 
 export const MEMBERSHIP_LABELS: Record<string, string> = {
@@ -46,11 +46,11 @@ export const VISIT_TYPE_LABELS: Record<string, string> = {
 }
 
 export const MESSAGE_STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'bg-slate-500/20 text-slate-400',
-  SENT: 'bg-blue-500/20 text-blue-400',
-  DELIVERED: 'bg-emerald-500/20 text-emerald-400',
-  READ: 'bg-green-500/20 text-green-400',
-  FAILED: 'bg-red-500/20 text-red-400',
+  DRAFT: 'bg-slate-100 text-slate-600',
+  SENT: 'bg-blue-50 text-blue-700',
+  DELIVERED: 'bg-emerald-50 text-emerald-700',
+  READ: 'bg-green-50 text-green-700',
+  FAILED: 'bg-red-50 text-red-700',
 }
 
 export const CHART_COLORS = {
@@ -63,12 +63,12 @@ export const CHART_COLORS = {
 }
 
 export const GOAL_STATUS_COLORS: Record<string, string> = {
-  NOT_STARTED: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-  IN_PROGRESS: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-  DONE: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-  FUTURE_IDEA: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-  ON_HOLD: 'bg-red-500/20 text-red-400 border-red-500/30',
-  ONGOING: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+  NOT_STARTED: 'bg-slate-100 text-slate-600 border-slate-200',
+  IN_PROGRESS: 'bg-amber-50 text-amber-700 border-amber-200',
+  DONE: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  FUTURE_IDEA: 'bg-purple-50 text-purple-700 border-purple-200',
+  ON_HOLD: 'bg-red-50 text-red-700 border-red-200',
+  ONGOING: 'bg-blue-50 text-blue-700 border-blue-200',
 }
 
 export const GOAL_STATUS_LABELS: Record<string, string> = {
@@ -88,29 +88,29 @@ export const GOAL_PRIORITY_COLORS: Record<string, string> = {
 }
 
 export const GOAL_CATEGORY_COLORS: Record<string, string> = {
-  Marketing: 'bg-pink-500/15 text-pink-400 border-pink-500/25',
-  Partnerships: 'bg-purple-500/15 text-purple-400 border-purple-500/25',
-  Operations: 'bg-blue-500/15 text-blue-400 border-blue-500/25',
-  'Playing Experience': 'bg-green-500/15 text-green-400 border-green-500/25',
-  'Site Improvement': 'bg-teal-500/15 text-teal-400 border-teal-500/25',
-  Hiring: 'bg-orange-500/15 text-orange-400 border-orange-500/25',
-  Finance: 'bg-amber-500/15 text-amber-400 border-amber-500/25',
-  'Pro Shop': 'bg-rose-500/15 text-rose-400 border-rose-500/25',
-  Buyout: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/25',
-  'Customer Experience': 'bg-cyan-500/15 text-cyan-400 border-cyan-500/25',
-  Culture: 'bg-lime-500/15 text-lime-400 border-lime-500/25',
-  'Membership Sales': 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25',
-  Programming: 'bg-violet-500/15 text-violet-400 border-violet-500/25',
-  'New Sites': 'bg-sky-500/15 text-sky-400 border-sky-500/25',
+  Marketing: 'bg-pink-50 text-pink-700 border-pink-200',
+  Partnerships: 'bg-purple-50 text-purple-700 border-purple-200',
+  Operations: 'bg-blue-50 text-blue-700 border-blue-200',
+  'Playing Experience': 'bg-green-50 text-green-700 border-green-200',
+  'Site Improvement': 'bg-teal-50 text-teal-700 border-teal-200',
+  Hiring: 'bg-orange-50 text-orange-700 border-orange-200',
+  Finance: 'bg-amber-50 text-amber-700 border-amber-200',
+  'Pro Shop': 'bg-rose-50 text-rose-700 border-rose-200',
+  Buyout: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+  'Customer Experience': 'bg-cyan-50 text-cyan-700 border-cyan-200',
+  Culture: 'bg-lime-50 text-lime-700 border-lime-200',
+  'Membership Sales': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  Programming: 'bg-violet-50 text-violet-700 border-violet-200',
+  'New Sites': 'bg-sky-50 text-sky-700 border-sky-200',
 }
 
 export const GOAL_COLUMN_HEADER_COLORS: Record<string, string> = {
-  NOT_STARTED: 'bg-slate-500/10 border-slate-500/30',
-  IN_PROGRESS: 'bg-amber-500/10 border-amber-500/30',
-  DONE: 'bg-emerald-500/10 border-emerald-500/30',
-  FUTURE_IDEA: 'bg-purple-500/10 border-purple-500/30',
-  ON_HOLD: 'bg-red-500/10 border-red-500/30',
-  ONGOING: 'bg-blue-500/10 border-blue-500/30',
+  NOT_STARTED: 'bg-slate-50 border-slate-200',
+  IN_PROGRESS: 'bg-amber-50 border-amber-200',
+  DONE: 'bg-emerald-50 border-emerald-200',
+  FUTURE_IDEA: 'bg-purple-50 border-purple-200',
+  ON_HOLD: 'bg-red-50 border-red-200',
+  ONGOING: 'bg-blue-50 border-blue-200',
 }
 
 export const NAV_ITEMS = [

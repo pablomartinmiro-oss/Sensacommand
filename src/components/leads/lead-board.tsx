@@ -34,7 +34,7 @@ const COLUMNS: ColumnConfig[] = [
     label: 'Cold',
     status: 'COLD_LEAD',
     description: 'Visited once, no response',
-    dotColor: 'bg-zinc-400',
+    dotColor: 'bg-[#9CA3AF]',
   },
   {
     key: 'converted',
@@ -107,8 +107,8 @@ export function LeadBoard() {
         {COLUMNS.map((col) => (
           <div key={col.key} className="space-y-3">
             <div className="flex items-center gap-2 px-1 py-2">
-              <div className="h-2.5 w-2.5 rounded-full bg-zinc-700 animate-pulse" />
-              <div className="h-4 w-20 rounded bg-zinc-800 animate-pulse" />
+              <div className="h-2.5 w-2.5 rounded-full bg-[#E8E4DD] animate-pulse" />
+              <div className="h-4 w-20 rounded bg-[#F0EFE9] animate-pulse" />
             </div>
             {Array.from({ length: 3 }).map((_, i) => (
               <SkeletonCard key={i} lines={2} />
@@ -129,21 +129,21 @@ export function LeadBoard() {
             <div className="flex items-center justify-between px-1 py-2 mb-2">
               <div className="flex items-center gap-2">
                 <div className={cn('h-2.5 w-2.5 rounded-full', col.dotColor)} />
-                <h3 className="text-sm font-semibold text-zinc-200">
+                <h3 className="text-sm font-semibold text-[#1A1A2E]">
                   {col.label}
                 </h3>
-                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-zinc-800 px-1.5 text-xs font-medium text-zinc-400">
+                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#F0EFE9] px-1.5 text-xs font-medium text-[#6B7280]">
                   {columnLeads.length}
                 </span>
               </div>
             </div>
-            <p className="text-xs text-zinc-600 px-1 mb-3">{col.description}</p>
+            <p className="text-xs text-[#9CA3AF] px-1 mb-3">{col.description}</p>
 
             {/* Scrollable card area */}
             <div className="flex-1 space-y-2 overflow-y-auto max-h-[calc(100vh-280px)] pr-1 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
               {columnLeads.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-zinc-800 py-8 text-center">
-                  <p className="text-xs text-zinc-600">No leads</p>
+                <div className="rounded-lg border border-dashed border-[#E8E4DD] py-8 text-center">
+                  <p className="text-xs text-[#9CA3AF]">No leads</p>
                 </div>
               ) : (
                 columnLeads.map((lead) => (

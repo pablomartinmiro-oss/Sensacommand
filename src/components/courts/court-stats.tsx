@@ -43,36 +43,36 @@ export function CourtStats({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {/* Most Popular Court */}
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
             <Trophy className="h-4 w-4" />
           </div>
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <span className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF]">
             Most Popular Court
           </span>
         </div>
         {mostPopularCourt ? (
           <>
-            <p className="text-2xl font-bold text-zinc-100">
+            <p className="text-2xl font-bold text-[#1A1A2E]">
               Court {mostPopularCourt.courtNumber}
             </p>
-            <p className="text-xs text-zinc-500 mt-1">
+            <p className="text-xs text-[#9CA3AF] mt-1">
               {mostPopularCourt.visitCount} total bookings
             </p>
           </>
         ) : (
-          <p className="text-sm text-zinc-600">No data</p>
+          <p className="text-sm text-[#9CA3AF]">No data</p>
         )}
       </div>
 
       {/* Peak Hours */}
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
             <Clock className="h-4 w-4" />
           </div>
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <span className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF]">
             Peak Hours
           </span>
         </div>
@@ -86,33 +86,33 @@ export function CourtStats({
                       'flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold',
                       idx === 0
                         ? 'bg-amber-500/20 text-amber-400'
-                        : 'bg-zinc-800 text-zinc-500'
+                        : 'bg-[#F0EFE9] text-[#9CA3AF]'
                     )}
                   >
                     {idx + 1}
                   </span>
-                  <span className="text-sm text-zinc-200">
+                  <span className="text-sm text-[#1A1A2E]">
                     {formatHour(ph.hour)}
                   </span>
                 </div>
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-[#9CA3AF]">
                   {ph.count} bookings
                 </span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-zinc-600">No data</p>
+          <p className="text-sm text-[#9CA3AF]">No data</p>
         )}
       </div>
 
       {/* Average Utilization */}
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
             <BarChart3 className="h-4 w-4" />
           </div>
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <span className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF]">
             Utilization / Court
           </span>
         </div>
@@ -121,14 +121,14 @@ export function CourtStats({
             {courtUtilization.map((court) => (
               <div key={court.courtNumber} className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-400">
+                  <span className="text-xs text-[#6B7280]">
                     Court {court.courtNumber}
                   </span>
-                  <span className="text-xs font-medium text-zinc-300">
+                  <span className="text-xs font-medium text-[#374151]">
                     {court.utilization}%
                   </span>
                 </div>
-                <div className="h-1.5 w-full rounded-full bg-zinc-800">
+                <div className="h-1.5 w-full rounded-full bg-[#F0EFE9]">
                   <div
                     className={cn(
                       'h-full rounded-full transition-all duration-500',
@@ -136,7 +136,7 @@ export function CourtStats({
                         ? 'bg-emerald-500'
                         : court.utilization >= 40
                           ? 'bg-amber-500'
-                          : 'bg-zinc-600'
+                          : 'bg-[#D1D5DB]'
                     )}
                     style={{
                       width: `${(court.utilization / maxUtilization) * 100}%`,
@@ -147,17 +147,17 @@ export function CourtStats({
             ))}
           </div>
         ) : (
-          <p className="text-sm text-zinc-600">No data</p>
+          <p className="text-sm text-[#9CA3AF]">No data</p>
         )}
       </div>
 
       {/* Revenue per Court */}
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
             <DollarSign className="h-4 w-4" />
           </div>
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <span className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF]">
             Revenue / Court
           </span>
         </div>
@@ -166,14 +166,14 @@ export function CourtStats({
             {revenuePerCourt.map((court) => (
               <div key={court.courtNumber} className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-400">
+                  <span className="text-xs text-[#6B7280]">
                     Court {court.courtNumber}
                   </span>
                   <span className="text-xs font-medium text-emerald-400">
                     {formatCurrency(court.revenue)}
                   </span>
                 </div>
-                <div className="h-1.5 w-full rounded-full bg-zinc-800">
+                <div className="h-1.5 w-full rounded-full bg-[#F0EFE9]">
                   <div
                     className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                     style={{
@@ -185,7 +185,7 @@ export function CourtStats({
             ))}
           </div>
         ) : (
-          <p className="text-sm text-zinc-600">No data</p>
+          <p className="text-sm text-[#9CA3AF]">No data</p>
         )}
       </div>
     </div>

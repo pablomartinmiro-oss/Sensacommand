@@ -52,9 +52,9 @@ export function QuickActions() {
             key={action.label}
             onClick={action.onClick}
             className={cn(
-              'inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-[#0f0f15] px-4 py-2.5',
-              'text-sm font-medium text-zinc-300 transition-all duration-200',
-              'hover:text-white hover:shadow-lg',
+              'inline-flex items-center gap-2 rounded-lg border border-[#E8E4DD] bg-white px-4 py-2.5',
+              'text-sm font-medium text-[#374151] transition-all duration-200',
+              'hover:text-[#1A1A2E] hover:shadow-lg',
               action.color,
             )}
           >

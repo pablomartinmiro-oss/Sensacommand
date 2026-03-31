@@ -8,7 +8,7 @@ function Shimmer({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'animate-pulse rounded-md bg-zinc-800/60',
+        'animate-pulse rounded-md bg-[#F0EFE9]',
         className,
       )}
     />
@@ -49,7 +49,7 @@ export function SkeletonCard({ className, lines = 3 }: SkeletonCardProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-zinc-800 bg-[#0f0f15] p-5 space-y-3',
+        'rounded-xl border border-[#E8E4DD] bg-white p-5 space-y-3',
         className,
       )}
     >
@@ -88,12 +88,12 @@ export function SkeletonTable({
   return (
     <div
       className={cn(
-        'rounded-xl border border-zinc-800 overflow-hidden',
+        'rounded-xl border border-[#E8E4DD] overflow-hidden',
         className,
       )}
     >
       {/* Header row */}
-      <div className="flex gap-4 border-b border-zinc-800 bg-[#0f0f15] px-4 py-3">
+      <div className="flex gap-4 border-b border-[#E8E4DD] bg-white px-4 py-3">
         {Array.from({ length: columns }).map((_, i) => (
           <Shimmer key={i} className="h-3 flex-1" />
         ))}
@@ -104,8 +104,8 @@ export function SkeletonTable({
         <div
           key={rowIdx}
           className={cn(
-            'flex gap-4 px-4 py-3 border-b border-zinc-800/60',
-            rowIdx % 2 === 1 && 'bg-zinc-900/40',
+            'flex gap-4 px-4 py-3 border-b border-[#E8E4DD]/60',
+            rowIdx % 2 === 1 && 'bg-[#F8F7F4]',
           )}
         >
           {Array.from({ length: columns }).map((_, colIdx) => (

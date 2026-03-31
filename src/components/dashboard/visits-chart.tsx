@@ -29,8 +29,8 @@ function VisitTooltipContent({
   if (!active || !payload?.length) return null
 
   return (
-    <div className="rounded-lg border border-zinc-700 bg-[#0f0f15] p-3 shadow-xl">
-      <p className="mb-1 text-xs font-medium text-zinc-400">{label}</p>
+    <div className="rounded-lg border border-[#D1D5DB] bg-white p-3 shadow-xl">
+      <p className="mb-1 text-xs font-medium text-[#6B7280]">{label}</p>
       <p className="text-sm font-semibold text-amber-400">
         {payload[0].value} visit{payload[0].value !== 1 ? 's' : ''}
       </p>
@@ -60,15 +60,15 @@ export function VisitsChart() {
 
   if (loading || !data) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <SkeletonCard lines={6} className="border-0 p-0" />
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
-      <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-500">
+    <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
+      <h3 className="mb-4 text-sm font-medium uppercase tracking-wider text-[#9CA3AF]">
         Visits — Last 30 Days
       </h3>
       <div className="h-72">

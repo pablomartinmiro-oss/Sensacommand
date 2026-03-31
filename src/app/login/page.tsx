@@ -32,10 +32,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-heading font-bold text-white mb-2">
+          <h1 className="text-3xl font-heading font-bold text-[#1A1A2E] mb-2">
             Sensa Command
           </h1>
           <p className="text-brand-muted">GM Command Center</p>
@@ -59,7 +59,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-white placeholder-brand-muted focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50"
+              className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-[#1A1A2E] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50"
               placeholder="pablo@sensapadel.com"
               required
             />
@@ -73,7 +73,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-white placeholder-brand-muted focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50"
+              className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-[#1A1A2E] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50"
               placeholder="••••••••"
               required
             />

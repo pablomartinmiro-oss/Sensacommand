@@ -31,22 +31,22 @@ export interface EnrichedMember {
 
 export function ChurnRiskCard({ member }: { member: EnrichedMember }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2.5">
+    <div className="flex items-center gap-3 rounded-lg border border-[#E8E4DD]/60 bg-[#F8F7F4] px-3 py-2.5">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-xs font-semibold text-red-400">
         {getInitials(member.firstName, member.lastName)}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-zinc-200 truncate">
+        <p className="text-sm font-medium text-[#1A1A2E] truncate">
           {member.firstName} {member.lastName}
         </p>
-        <div className="flex items-center gap-3 text-xs text-zinc-500">
+        <div className="flex items-center gap-3 text-xs text-[#9CA3AF]">
           <Badge variant={TIER_BADGE_VARIANT[member.membershipType] || 'default'}>
             {MEMBERSHIP_LABELS[member.membershipType]}
           </Badge>
           <span className="flex items-center gap-1">
             <Eye className="h-3 w-3" />
             {member.visitsThisMonth} this month
-            <span className="text-zinc-600">(avg {member.avgVisitsPerMonth})</span>
+            <span className="text-[#9CA3AF]">(avg {member.avgVisitsPerMonth})</span>
           </span>
         </div>
       </div>
@@ -78,15 +78,15 @@ export function RenewalCard({ member }: { member: EnrichedMember }) {
     : 0
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2.5">
+    <div className="flex items-center gap-3 rounded-lg border border-[#E8E4DD]/60 bg-[#F8F7F4] px-3 py-2.5">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-xs font-semibold text-amber-400">
         {getInitials(member.firstName, member.lastName)}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-zinc-200 truncate">
+        <p className="text-sm font-medium text-[#1A1A2E] truncate">
           {member.firstName} {member.lastName}
         </p>
-        <div className="flex items-center gap-3 text-xs text-zinc-500">
+        <div className="flex items-center gap-3 text-xs text-[#9CA3AF]">
           <Badge variant={TIER_BADGE_VARIANT[member.membershipType] || 'default'}>
             {MEMBERSHIP_LABELS[member.membershipType]}
           </Badge>
@@ -107,7 +107,7 @@ export function RenewalCard({ member }: { member: EnrichedMember }) {
             : `${daysUntilRenewal}d until renewal`}
         </p>
         {member.membershipEndDate && (
-          <p className="text-xs text-zinc-600">
+          <p className="text-xs text-[#9CA3AF]">
             {formatDate(member.membershipEndDate)}
           </p>
         )}

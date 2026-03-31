@@ -29,9 +29,9 @@ export function GoalsSummary() {
   if (loading) {
     return (
       <div className="bg-brand-card border border-brand-border rounded-xl p-4">
-        <div className="h-6 w-32 bg-zinc-800 rounded animate-pulse mb-3" />
+        <div className="h-6 w-32 bg-[#F0EFE9] rounded animate-pulse mb-3" />
         <div className="space-y-2">
-          {[1, 2, 3].map(i => <div key={i} className="h-4 bg-zinc-800 rounded animate-pulse" />)}
+          {[1, 2, 3].map(i => <div key={i} className="h-4 bg-[#F0EFE9] rounded animate-pulse" />)}
         </div>
       </div>
     )
@@ -42,7 +42,7 @@ export function GoalsSummary() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Crosshair className="w-4 h-4 text-amber-400" />
-          <h3 className="text-sm font-semibold text-zinc-100">Goals</h3>
+          <h3 className="text-sm font-semibold text-[#1A1A2E]">Goals</h3>
         </div>
         <Link href="/goals" className="text-xs text-amber-400 hover:text-amber-300">View all</Link>
       </div>
@@ -57,24 +57,24 @@ export function GoalsSummary() {
       <div className="grid grid-cols-3 gap-3 mb-4">
         <div className="text-center">
           <p className="text-lg font-bold text-amber-400">{inProgress}</p>
-          <p className="text-[10px] text-zinc-500">In Progress</p>
+          <p className="text-[10px] text-[#9CA3AF]">In Progress</p>
         </div>
         <div className="text-center">
           <p className="text-lg font-bold text-red-400">{overdue}</p>
-          <p className="text-[10px] text-zinc-500">Overdue</p>
+          <p className="text-[10px] text-[#9CA3AF]">Overdue</p>
         </div>
         <div className="text-center">
           <p className="text-lg font-bold text-slate-400">{notStarted}</p>
-          <p className="text-[10px] text-zinc-500">Not Started</p>
+          <p className="text-[10px] text-[#9CA3AF]">Not Started</p>
         </div>
       </div>
 
       {pabloHighPriority.length > 0 && (
         <div>
-          <p className="text-[10px] uppercase tracking-wider text-zinc-500 mb-2">My Top Priorities</p>
+          <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] mb-2">My Top Priorities</p>
           <div className="space-y-1.5">
             {pabloHighPriority.map(g => (
-              <Link key={g.id} href="/goals" className="block text-xs text-zinc-300 hover:text-amber-400 transition-colors truncate border-l-2 border-amber-500 pl-2">
+              <Link key={g.id} href="/goals" className="block text-xs text-[#374151] hover:text-amber-400 transition-colors truncate border-l-2 border-amber-500 pl-2">
                 {g.title}
               </Link>
             ))}

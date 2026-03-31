@@ -78,7 +78,7 @@ export function CSVDropzone({ onFileLoaded }: CSVDropzoneProps) {
             ? 'border-amber-500 bg-amber-500/5'
             : file
             ? 'border-emerald-500/40 bg-emerald-500/5'
-            : 'border-zinc-700 bg-zinc-900/30 hover:border-zinc-600 hover:bg-zinc-900/50',
+            : 'border-[#D1D5DB] bg-white/30 hover:border-[#D1D5DB] hover:bg-[#F8F7F4]',
         )}
       >
         <input
@@ -93,8 +93,8 @@ export function CSVDropzone({ onFileLoaded }: CSVDropzoneProps) {
           <div className="flex flex-col items-center gap-3">
             <FileText className="w-12 h-12 text-emerald-400" />
             <div>
-              <p className="text-sm font-medium text-zinc-200">{file.name}</p>
-              <p className="text-xs text-zinc-500 mt-1">{formatSize(file.size)}</p>
+              <p className="text-sm font-medium text-[#1A1A2E]">{file.name}</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">{formatSize(file.size)}</p>
             </div>
             <Button
               size="sm"
@@ -113,15 +113,15 @@ export function CSVDropzone({ onFileLoaded }: CSVDropzoneProps) {
             <Upload
               className={cn(
                 'w-12 h-12',
-                dragging ? 'text-amber-400' : 'text-zinc-600',
+                dragging ? 'text-amber-400' : 'text-[#9CA3AF]',
               )}
             />
             <div>
-              <p className="text-sm font-medium text-zinc-300">
+              <p className="text-sm font-medium text-[#374151]">
                 Drop your CSV file here, or{' '}
                 <span className="text-amber-400 underline">browse</span>
               </p>
-              <p className="text-xs text-zinc-600 mt-1">
+              <p className="text-xs text-[#9CA3AF] mt-1">
                 Accepts .csv files only
               </p>
             </div>

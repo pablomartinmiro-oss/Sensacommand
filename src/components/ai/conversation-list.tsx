@@ -30,8 +30,8 @@ export function ConversationList({
   return (
     <div className={cn('flex flex-col h-full', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
-        <h3 className="text-sm font-semibold text-zinc-300">Conversations</h3>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E8E4DD]">
+        <h3 className="text-sm font-semibold text-[#374151]">Conversations</h3>
         <div className="flex gap-1">
           <Button size="sm" onClick={onNew}>
             <Plus className="w-3.5 h-3.5" />
@@ -40,7 +40,7 @@ export function ConversationList({
           {onClose && (
             <button
               onClick={onClose}
-              className="lg:hidden p-1.5 rounded hover:bg-zinc-800 text-zinc-500"
+              className="lg:hidden p-1.5 rounded hover:bg-[#F0EFE9] text-[#9CA3AF]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -51,7 +51,7 @@ export function ConversationList({
       {/* List */}
       <div className="flex-1 overflow-y-auto py-2 space-y-0.5">
         {conversations.length === 0 ? (
-          <p className="px-4 py-8 text-center text-xs text-zinc-600">
+          <p className="px-4 py-8 text-center text-xs text-[#9CA3AF]">
             No conversations yet.
           </p>
         ) : (
@@ -63,25 +63,25 @@ export function ConversationList({
                 'w-full flex items-start gap-3 px-4 py-3 text-left transition-colors',
                 activeId === conv.id
                   ? 'bg-amber-500/10 border-r-2 border-amber-500'
-                  : 'hover:bg-zinc-800/60',
+                  : 'hover:bg-[#F0EFE9]/60',
               )}
             >
               <MessageSquare
                 className={cn(
                   'w-4 h-4 mt-0.5 shrink-0',
-                  activeId === conv.id ? 'text-amber-400' : 'text-zinc-600',
+                  activeId === conv.id ? 'text-amber-400' : 'text-[#9CA3AF]',
                 )}
               />
               <div className="flex-1 min-w-0">
                 <p
                   className={cn(
                     'text-sm font-medium truncate',
-                    activeId === conv.id ? 'text-amber-300' : 'text-zinc-300',
+                    activeId === conv.id ? 'text-amber-300' : 'text-[#374151]',
                   )}
                 >
                   {conv.title || 'Untitled'}
                 </p>
-                <p className="text-xs text-zinc-600 mt-0.5">
+                <p className="text-xs text-[#9CA3AF] mt-0.5">
                   {formatDate(conv.createdAt)}
                 </p>
               </div>

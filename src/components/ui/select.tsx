@@ -19,7 +19,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="text-sm font-medium text-zinc-400"
+            className="text-sm font-medium text-[#6B7280]"
           >
             {label}
           </label>
@@ -28,21 +28,21 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            'h-10 w-full appearance-none rounded-lg border bg-zinc-900/60 px-3 pr-8 text-sm text-zinc-100',
-            'transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0a0a0f]',
+            'h-10 w-full appearance-none rounded-lg border bg-white px-3 pr-8 text-sm text-[#1A1A2E]',
+            'transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white',
             /* Custom arrow via background SVG */
             'bg-[length:16px_16px] bg-[right_8px_center] bg-no-repeat',
             'bg-[url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2716%27%20height%3D%2716%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%2371717a%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27m6%209%206%206%206-6%27/%3E%3C/svg%3E")]',
             error
               ? 'border-red-500/60 focus:ring-red-500/50'
-              : 'border-zinc-700 focus:ring-amber-500/50 focus:border-amber-500/60',
+              : 'border-[#D1D5DB] focus:ring-amber-500/50 focus:border-amber-500/60',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             className,
           )}
           {...props}
         >
           {placeholder && (
-            <option value="" className="bg-zinc-900 text-zinc-500">
+            <option value="" className="bg-white text-[#9CA3AF]">
               {placeholder}
             </option>
           )}
@@ -50,7 +50,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             <option
               key={opt.value}
               value={opt.value}
-              className="bg-zinc-900 text-zinc-100"
+              className="bg-white text-[#1A1A2E]"
             >
               {opt.label}
             </option>

@@ -53,7 +53,7 @@ export default function TeamPage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-              <div key={i} className="h-40 bg-zinc-800 rounded-xl animate-pulse" />
+              <div key={i} className="h-40 bg-[#F0EFE9] rounded-xl animate-pulse" />
             ))}
           </div>
         ) : (
@@ -64,21 +64,21 @@ export default function TeamPage() {
                 <button
                   key={member.id}
                   onClick={() => router.push(`/goals?assigneeId=${member.id}`)}
-                  className="bg-brand-card border border-brand-border rounded-xl p-4 hover:border-zinc-600 transition-colors text-left"
+                  className="bg-brand-card border border-brand-border rounded-xl p-4 hover:border-[#D1D5DB] transition-colors text-left"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-semibold text-sm">
                       {member.firstName[0]}{member.lastName[0]}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-zinc-100">
+                      <p className="text-sm font-semibold text-[#1A1A2E]">
                         {member.firstName} {member.lastName}
                       </p>
-                      <p className="text-xs text-zinc-500">{ROLE_LABELS[member.role] || member.role}</p>
+                      <p className="text-xs text-[#9CA3AF]">{ROLE_LABELS[member.role] || member.role}</p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-zinc-500 mb-2">
+                  <p className="text-xs text-[#9CA3AF] mb-2">
                     {member._count.assignedGoals} goal{member._count.assignedGoals !== 1 ? 's' : ''} assigned
                   </p>
 

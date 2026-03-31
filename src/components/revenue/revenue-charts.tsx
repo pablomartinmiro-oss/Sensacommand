@@ -56,8 +56,8 @@ const CATEGORY_KEYS: { key: 'courtRentals' | 'memberships' | 'lessons' | 'proSho
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 shadow-xl">
-      <p className="text-xs font-medium text-zinc-400 mb-2">{label}</p>
+    <div className="rounded-lg border border-[#D1D5DB] bg-white p-3 shadow-xl">
+      <p className="text-xs font-medium text-[#6B7280] mb-2">{label}</p>
       {payload.map((entry, i) => (
         <div key={i} className="flex items-center justify-between gap-4 text-sm">
           <span className="flex items-center gap-1.5">
@@ -65,9 +65,9 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
               className="inline-block h-2.5 w-2.5 rounded-full"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-zinc-300">{entry.name}</span>
+            <span className="text-[#374151]">{entry.name}</span>
           </span>
-          <span className="font-medium text-zinc-100">
+          <span className="font-medium text-[#1A1A2E]">
             {formatCurrency(entry.value)}
           </span>
         </div>
@@ -142,15 +142,15 @@ export function RevenueCharts({ refreshKey }: RevenueChartsProps) {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
       {/* Monthly comparison bar chart */}
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
-        <h3 className="text-sm font-semibold text-zinc-100 mb-4">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
+        <h3 className="text-sm font-semibold text-[#1A1A2E] mb-4">
           Monthly Comparison
-          <span className="ml-2 text-xs font-normal text-zinc-500">
+          <span className="ml-2 text-xs font-normal text-[#9CA3AF]">
             This month vs last month
           </span>
         </h3>
         {barData.length === 0 ? (
-          <div className="flex items-center justify-center h-64 text-sm text-zinc-500">
+          <div className="flex items-center justify-center h-64 text-sm text-[#9CA3AF]">
             No data available
           </div>
         ) : (
@@ -191,15 +191,15 @@ export function RevenueCharts({ refreshKey }: RevenueChartsProps) {
       </div>
 
       {/* Revenue by category pie chart */}
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
-        <h3 className="text-sm font-semibold text-zinc-100 mb-4">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
+        <h3 className="text-sm font-semibold text-[#1A1A2E] mb-4">
           Revenue by Category
-          <span className="ml-2 text-xs font-normal text-zinc-500">
+          <span className="ml-2 text-xs font-normal text-[#9CA3AF]">
             Current month
           </span>
         </h3>
         {pieData.length === 0 ? (
-          <div className="flex items-center justify-center h-64 text-sm text-zinc-500">
+          <div className="flex items-center justify-center h-64 text-sm text-[#9CA3AF]">
             No data available
           </div>
         ) : (
@@ -239,8 +239,8 @@ export function RevenueCharts({ refreshKey }: RevenueChartsProps) {
                     className="inline-block h-2.5 w-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: entry.color }}
                   />
-                  <span className="text-zinc-400 truncate">{entry.name}</span>
-                  <span className="text-zinc-200 font-medium ml-auto">
+                  <span className="text-[#6B7280] truncate">{entry.name}</span>
+                  <span className="text-[#1A1A2E] font-medium ml-auto">
                     {pieTotal > 0
                       ? `${Math.round((entry.value / pieTotal) * 100)}%`
                       : '0%'}

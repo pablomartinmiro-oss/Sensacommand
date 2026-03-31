@@ -58,10 +58,10 @@ function SectionCard({
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+    <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
       <div className="flex items-center gap-2 mb-4">
         <Icon className="w-5 h-5 text-amber-500" />
-        <h3 className="text-sm font-heading font-semibold text-zinc-200 uppercase tracking-wider">
+        <h3 className="text-sm font-heading font-semibold text-[#1A1A2E] uppercase tracking-wider">
           {title}
         </h3>
       </div>
@@ -316,7 +316,7 @@ export function SettingsForm() {
 
       {/* Peak Hours */}
       <SectionCard icon={Clock} title="Peak Hours">
-        <p className="text-xs text-zinc-500 mb-3">
+        <p className="text-xs text-[#9CA3AF] mb-3">
           Select hours considered peak time for court pricing and analytics.
         </p>
         <div className="flex flex-wrap gap-2">
@@ -328,7 +328,7 @@ export function SettingsForm() {
                 'px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors',
                 settings.peakHours.includes(value)
                   ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
-                  : 'bg-zinc-900/60 text-zinc-500 border-zinc-800 hover:border-zinc-600',
+                  : 'bg-white text-[#9CA3AF] border-[#E8E4DD] hover:border-[#D1D5DB]',
               )}
             >
               {label}
@@ -435,7 +435,7 @@ export function SettingsForm() {
             Reset to Seed Data
           </Button>
         </div>
-        <p className="text-xs text-zinc-600 mt-3">
+        <p className="text-xs text-[#9CA3AF] mt-3">
           Export downloads all data as JSON. Reset requires re-running the database seed command.
         </p>
       </SectionCard>

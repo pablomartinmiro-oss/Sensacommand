@@ -22,12 +22,12 @@ export function GoalCard({ goal, onClick }: GoalCardProps) {
     <button
       onClick={onClick}
       className={cn(
-        'w-full text-left bg-brand-card border border-brand-border rounded-lg p-3 hover:border-zinc-600 transition-colors cursor-pointer',
+        'w-full text-left bg-brand-card border border-brand-border rounded-lg p-3 hover:border-[#D1D5DB] transition-colors cursor-pointer',
         'border-l-[3px]',
         GOAL_PRIORITY_COLORS[goal.priority] || 'border-l-transparent'
       )}
     >
-      <p className="text-sm font-medium text-zinc-100 line-clamp-2 mb-2">
+      <p className="text-sm font-medium text-[#1A1A2E] line-clamp-2 mb-2">
         {goal.title}
       </p>
 
@@ -38,14 +38,14 @@ export function GoalCard({ goal, onClick }: GoalCardProps) {
               key={cat}
               className={cn(
                 'inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-medium',
-                GOAL_CATEGORY_COLORS[cat] || 'bg-zinc-500/15 text-zinc-400 border-zinc-500/25'
+                GOAL_CATEGORY_COLORS[cat] || 'bg-zinc-500/15 text-[#6B7280] border-zinc-500/25'
               )}
             >
               {cat}
             </span>
           ))}
           {goal.categories.length > 2 && (
-            <span className="text-[10px] text-zinc-500">+{goal.categories.length - 2}</span>
+            <span className="text-[10px] text-[#9CA3AF]">+{goal.categories.length - 2}</span>
           )}
         </div>
       )}
@@ -55,7 +55,7 @@ export function GoalCard({ goal, onClick }: GoalCardProps) {
           {goal.assignees.map((a) => (
             <span
               key={a.id}
-              className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-zinc-700 text-[9px] font-medium text-zinc-300"
+              className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#E8E4DD] text-[9px] font-medium text-[#374151]"
               title={`${a.firstName} ${a.lastName}`}
             >
               {a.firstName[0]}{a.lastName[0]}
@@ -63,7 +63,7 @@ export function GoalCard({ goal, onClick }: GoalCardProps) {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 text-[10px] text-zinc-500">
+        <div className="flex items-center gap-2 text-[10px] text-[#9CA3AF]">
           {goal._count.comments > 0 && (
             <span className="flex items-center gap-0.5">
               <MessageSquare className="w-3 h-3" />

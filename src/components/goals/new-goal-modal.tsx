@@ -61,13 +61,13 @@ export function NewGoalModal({ open, onClose, onCreated, teamMembers }: NewGoalM
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Goal title..."
           required
-          className="w-full h-10 rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+          className="w-full h-10 rounded-lg border border-[#D1D5DB] bg-white px-3 text-sm text-[#1A1A2E] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-amber-500/50"
         />
 
         <div className="flex gap-3">
           <div className="flex-1">
-            <label className="text-xs text-zinc-500 mb-1 block">Priority</label>
-            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full h-9 rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+            <label className="text-xs text-[#9CA3AF] mb-1 block">Priority</label>
+            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full h-9 rounded-lg border border-[#D1D5DB] bg-white px-3 text-sm text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-amber-500/50">
               <option value="NONE">None</option>
               <option value="HIGH">High</option>
               <option value="MEDIUM">Medium</option>
@@ -75,17 +75,17 @@ export function NewGoalModal({ open, onClose, onCreated, teamMembers }: NewGoalM
             </select>
           </div>
           <div className="flex-1">
-            <label className="text-xs text-zinc-500 mb-1 block">Due Date</label>
-            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full h-9 rounded-lg border border-zinc-700 bg-zinc-900/60 px-3 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
+            <label className="text-xs text-[#9CA3AF] mb-1 block">Due Date</label>
+            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full h-9 rounded-lg border border-[#D1D5DB] bg-white px-3 text-sm text-[#1A1A2E] focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
           </div>
         </div>
 
         <div>
-          <label className="text-xs text-zinc-500 mb-1.5 block">Categories</label>
+          <label className="text-xs text-[#9CA3AF] mb-1.5 block">Categories</label>
           <div className="flex flex-wrap gap-1.5">
             {ALL_CATEGORIES.map(cat => (
               <button key={cat} type="button" onClick={() => setCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])}
-                className={cn('text-[11px] rounded-full border px-2 py-0.5 font-medium transition-colors', categories.includes(cat) ? GOAL_CATEGORY_COLORS[cat] || 'bg-zinc-500/15 text-zinc-400 border-zinc-500/25' : 'bg-zinc-800/50 text-zinc-600 border-zinc-700/50 hover:text-zinc-400')}>
+                className={cn('text-[11px] rounded-full border px-2 py-0.5 font-medium transition-colors', categories.includes(cat) ? GOAL_CATEGORY_COLORS[cat] || 'bg-zinc-500/15 text-[#6B7280] border-zinc-500/25' : 'bg-[#F0EFE9] text-[#9CA3AF] border-[#D1D5DB]/50 hover:text-[#6B7280]')}>
                 {cat}
               </button>
             ))}
@@ -93,11 +93,11 @@ export function NewGoalModal({ open, onClose, onCreated, teamMembers }: NewGoalM
         </div>
 
         <div>
-          <label className="text-xs text-zinc-500 mb-1.5 block">Assignees</label>
+          <label className="text-xs text-[#9CA3AF] mb-1.5 block">Assignees</label>
           <div className="flex flex-wrap gap-1.5">
             {teamMembers.map(m => (
               <button key={m.id} type="button" onClick={() => setAssigneeIds(prev => prev.includes(m.id) ? prev.filter(a => a !== m.id) : [...prev, m.id])}
-                className={cn('text-xs rounded-full border px-2.5 py-1 font-medium transition-colors', assigneeIds.includes(m.id) ? 'bg-amber-500/15 text-amber-400 border-amber-500/25' : 'bg-zinc-800/50 text-zinc-600 border-zinc-700/50 hover:text-zinc-400')}>
+                className={cn('text-xs rounded-full border px-2.5 py-1 font-medium transition-colors', assigneeIds.includes(m.id) ? 'bg-amber-500/15 text-amber-400 border-amber-500/25' : 'bg-[#F0EFE9] text-[#9CA3AF] border-[#D1D5DB]/50 hover:text-[#6B7280]')}>
                 {m.firstName} {m.lastName}
               </button>
             ))}
@@ -105,7 +105,7 @@ export function NewGoalModal({ open, onClose, onCreated, teamMembers }: NewGoalM
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="h-9 px-4 rounded-lg text-sm text-zinc-400 hover:text-white transition-colors">Cancel</button>
+          <button type="button" onClick={onClose} className="h-9 px-4 rounded-lg text-sm text-[#6B7280] hover:text-[#1A1A2E] transition-colors">Cancel</button>
           <button type="submit" disabled={saving || !title.trim()} className="h-9 px-4 rounded-lg bg-amber-500 text-black text-sm font-semibold disabled:opacity-50 hover:bg-amber-600 transition-colors">
             {saving ? 'Creating...' : 'Create Goal'}
           </button>

@@ -157,7 +157,7 @@ export function TemplateEditor() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-zinc-400">{templates.length} template(s)</p>
+        <p className="text-sm text-[#6B7280]">{templates.length} template(s)</p>
         <Button size="sm" onClick={startNew} disabled={showNew}>
           <Plus className="w-4 h-4" />
           New Template
@@ -166,12 +166,12 @@ export function TemplateEditor() {
 
       {/* Template form (new or editing) */}
       {(showNew || editingId) && (
-        <div className="rounded-xl border border-amber-500/30 bg-[#0f0f15] p-5 space-y-4">
+        <div className="rounded-xl border border-amber-500/30 bg-white p-5 space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-semibold text-amber-400">
               {editingId ? 'Edit Template' : 'New Template'}
             </h4>
-            <button onClick={cancelEdit} className="text-zinc-500 hover:text-zinc-300">
+            <button onClick={cancelEdit} className="text-[#9CA3AF] hover:text-[#1A1A2E]">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -220,7 +220,7 @@ export function TemplateEditor() {
                   key={v}
                   type="button"
                   onClick={() => setForm({ ...form, body: form.body + v })}
-                  className="px-2 py-0.5 text-xs rounded bg-zinc-800 text-amber-400 hover:bg-zinc-700 transition-colors"
+                  className="px-2 py-0.5 text-xs rounded bg-[#F0EFE9] text-amber-400 hover:bg-[#E8E4DD] transition-colors"
                 >
                   {v}
                 </button>
@@ -242,7 +242,7 @@ export function TemplateEditor() {
 
       {/* Template list */}
       {templates.length === 0 ? (
-        <div className="text-center py-12 text-zinc-500 text-sm">
+        <div className="text-center py-12 text-[#9CA3AF] text-sm">
           No templates yet. Create one to get started.
         </div>
       ) : (
@@ -251,17 +251,17 @@ export function TemplateEditor() {
             <div
               key={tpl.id}
               className={cn(
-                'rounded-lg border bg-[#0f0f15] p-4 transition-colors',
+                'rounded-lg border bg-white p-4 transition-colors',
                 editingId === tpl.id
                   ? 'border-amber-500/40'
-                  : 'border-zinc-800 hover:border-zinc-700',
+                  : 'border-[#E8E4DD] hover:border-[#D1D5DB]',
               )}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="text-sm font-medium text-zinc-200">{tpl.name}</h4>
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-zinc-800 text-zinc-400">
+                    <h4 className="text-sm font-medium text-[#1A1A2E]">{tpl.name}</h4>
+                    <span className="px-2 py-0.5 text-xs rounded-full bg-[#F0EFE9] text-[#6B7280]">
                       {tpl.channel}
                     </span>
                     <span className="px-2 py-0.5 text-xs rounded-full bg-amber-500/10 text-amber-400">
@@ -269,20 +269,20 @@ export function TemplateEditor() {
                     </span>
                   </div>
                   {tpl.subject && (
-                    <p className="text-xs text-zinc-500 mb-1">Subject: {tpl.subject}</p>
+                    <p className="text-xs text-[#9CA3AF] mb-1">Subject: {tpl.subject}</p>
                   )}
-                  <p className="text-sm text-zinc-400 line-clamp-2">{tpl.body}</p>
+                  <p className="text-sm text-[#6B7280] line-clamp-2">{tpl.body}</p>
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <button
                     onClick={() => startEdit(tpl)}
-                    className="p-1.5 rounded hover:bg-zinc-800 text-zinc-500 hover:text-amber-400 transition-colors"
+                    className="p-1.5 rounded hover:bg-[#F0EFE9] text-[#9CA3AF] hover:text-amber-400 transition-colors"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(tpl.id)}
-                    className="p-1.5 rounded hover:bg-zinc-800 text-zinc-500 hover:text-red-400 transition-colors"
+                    className="p-1.5 rounded hover:bg-[#F0EFE9] text-[#9CA3AF] hover:text-red-400 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

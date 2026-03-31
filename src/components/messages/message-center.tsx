@@ -118,7 +118,7 @@ export function MessageCenter() {
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-lg bg-zinc-900/60 border border-zinc-800 w-fit">
+      <div className="flex items-center gap-1 p-1 rounded-lg bg-white border border-[#E8E4DD] w-fit">
         {TAB_CONFIG.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
@@ -127,7 +127,7 @@ export function MessageCenter() {
               'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors',
               tab === key
                 ? 'bg-amber-500/10 text-amber-400'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60',
+                : 'text-[#6B7280] hover:text-[#1A1A2E] hover:bg-[#F0EFE9]/60',
             )}
           >
             <Icon className="w-4 h-4" />
@@ -153,9 +153,9 @@ export function MessageCenter() {
           {loading ? (
             <SkeletonTable rows={6} columns={6} />
           ) : sentMessages.length === 0 ? (
-            <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] py-16 text-center">
-              <Inbox className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
-              <p className="text-sm text-zinc-500">
+            <div className="rounded-xl border border-[#E8E4DD] bg-white py-16 text-center">
+              <Inbox className="w-10 h-10 text-[#D1D5DB] mx-auto mb-3" />
+              <p className="text-sm text-[#9CA3AF]">
                 {tab === 'drafts' ? 'No drafts yet.' : 'No sent messages yet.'}
               </p>
             </div>
@@ -178,7 +178,7 @@ export function MessageCenter() {
                     <TableCell className="whitespace-nowrap text-xs">
                       {formatDateTime(msg.createdAt)}
                     </TableCell>
-                    <TableCell className="font-medium text-zinc-200">
+                    <TableCell className="font-medium text-[#1A1A2E]">
                       {msg.player.firstName} {msg.player.lastName}
                     </TableCell>
                     <TableCell>
@@ -191,7 +191,7 @@ export function MessageCenter() {
                         {msg.channel}
                       </span>
                     </TableCell>
-                    <TableCell className="max-w-[150px] truncate text-zinc-400">
+                    <TableCell className="max-w-[150px] truncate text-[#6B7280]">
                       {msg.subject || '--'}
                     </TableCell>
                     <TableCell>
@@ -199,7 +199,7 @@ export function MessageCenter() {
                         {msg.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="max-w-[200px] truncate text-zinc-500 text-xs">
+                    <TableCell className="max-w-[200px] truncate text-[#9CA3AF] text-xs">
                       {msg.body}
                     </TableCell>
                     {tab === 'drafts' && (
@@ -207,14 +207,14 @@ export function MessageCenter() {
                         <div className="flex gap-1">
                           <button
                             onClick={() => handleSendDraft(msg)}
-                            className="p-1.5 rounded hover:bg-zinc-800 text-zinc-500 hover:text-emerald-400 transition-colors"
+                            className="p-1.5 rounded hover:bg-[#F0EFE9] text-[#9CA3AF] hover:text-emerald-400 transition-colors"
                             title="Send"
                           >
                             <Send className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(msg.id)}
-                            className="p-1.5 rounded hover:bg-zinc-800 text-zinc-500 hover:text-red-400 transition-colors"
+                            className="p-1.5 rounded hover:bg-[#F0EFE9] text-[#9CA3AF] hover:text-red-400 transition-colors"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />

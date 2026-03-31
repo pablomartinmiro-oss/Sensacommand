@@ -110,9 +110,9 @@ export function RevenueForm({ onSaved }: RevenueFormProps) {
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+    <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-base font-semibold text-zinc-100">
+        <h2 className="text-base font-semibold text-[#1A1A2E]">
           Daily Revenue Entry
         </h2>
         {isEdit && (
@@ -143,13 +143,13 @@ export function RevenueForm({ onSaved }: RevenueFormProps) {
         ))}
       </div>
 
-      <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
+      <div className="flex items-center justify-between pt-4 border-t border-[#E8E4DD]">
         <div className="flex items-center gap-3">
-          <span className="text-sm text-zinc-400">Total:</span>
+          <span className="text-sm text-[#6B7280]">Total:</span>
           <span
             className={cn(
               'text-xl font-bold',
-              total > 0 ? 'text-emerald-400' : 'text-zinc-500'
+              total > 0 ? 'text-emerald-400' : 'text-[#9CA3AF]'
             )}
           >
             {formatCurrency(total)}

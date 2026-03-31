@@ -9,7 +9,7 @@ export default function LeadsPage() {
       <main className="flex-1 overflow-y-auto px-4 py-6 lg:px-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-[#9CA3AF]">
               Track prospects from first visit to membership conversion.
             </p>
           </div>

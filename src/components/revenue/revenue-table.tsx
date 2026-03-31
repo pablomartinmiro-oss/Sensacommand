@@ -101,9 +101,9 @@ export function RevenueTable({ refreshKey }: RevenueTableProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-zinc-100">
+        <h2 className="text-base font-semibold text-[#1A1A2E]">
           Revenue History
-          <span className="ml-2 text-xs font-normal text-zinc-500">
+          <span className="ml-2 text-xs font-normal text-[#9CA3AF]">
             Last 30 days
           </span>
         </h2>
@@ -162,7 +162,7 @@ export function RevenueTable({ refreshKey }: RevenueTableProps) {
 
           {records.length === 0 && (
             <TableRow>
-              <TableCell colSpan={8} className="text-center text-zinc-500 py-8">
+              <TableCell colSpan={8} className="text-center text-[#9CA3AF] py-8">
                 No revenue data for the last 30 days
               </TableCell>
             </TableRow>
@@ -170,7 +170,7 @@ export function RevenueTable({ refreshKey }: RevenueTableProps) {
 
           {records.map((r) => (
             <TableRow key={r.id}>
-              <TableCell className="font-medium text-zinc-200">
+              <TableCell className="font-medium text-[#1A1A2E]">
                 {formatDate(r.date)}
               </TableCell>
               <TableCell className="text-right">
@@ -191,7 +191,7 @@ export function RevenueTable({ refreshKey }: RevenueTableProps) {
               <TableCell className="text-right">
                 {formatCurrency(Number(r.other))}
               </TableCell>
-              <TableCell className="text-right font-semibold text-zinc-100">
+              <TableCell className="text-right font-semibold text-[#1A1A2E]">
                 {formatCurrency(Number(r.totalRevenue))}
               </TableCell>
             </TableRow>

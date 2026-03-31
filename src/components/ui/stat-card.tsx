@@ -29,7 +29,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        'group relative rounded-xl border border-zinc-800 bg-[#0f0f15] p-5',
+        'group relative rounded-xl border border-[#E8E4DD] bg-white p-5',
         'transition-all duration-300',
         /* Gradient border glow on hover */
         'before:absolute before:inset-0 before:rounded-xl before:p-[1px]',
@@ -43,14 +43,14 @@ export function StatCard({
     >
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1">
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <span className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF]">
             {title}
           </span>
-          <span className="text-2xl font-bold text-zinc-100">{value}</span>
+          <span className="text-2xl font-bold text-[#1A1A2E]">{value}</span>
         </div>
 
         {icon && (
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-800/60 text-amber-500 group-hover:bg-amber-500/10 transition-colors">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F0EFE9] text-amber-500 group-hover:bg-amber-500/10 transition-colors">
             {icon}
           </div>
         )}
@@ -71,10 +71,10 @@ export function StatCard({
             </span>
           )}
           {change === 0 && (
-            <span className="text-xs font-medium text-zinc-500">0%</span>
+            <span className="text-xs font-medium text-[#9CA3AF]">0%</span>
           )}
           {changeLabel && (
-            <span className="text-xs text-zinc-600">{changeLabel}</span>
+            <span className="text-xs text-[#9CA3AF]">{changeLabel}</span>
           )}
         </div>
       )}

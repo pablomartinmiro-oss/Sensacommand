@@ -18,10 +18,10 @@ export default function ImportPage() {
       <main className="flex-1 overflow-y-auto px-4 py-6 lg:px-6 space-y-6">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">
-            <h2 className="text-lg font-heading font-semibold text-zinc-200 mb-1">
+            <h2 className="text-lg font-heading font-semibold text-[#1A1A2E] mb-1">
               Import Players & Visits
             </h2>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-[#9CA3AF]">
               Upload a CSV file from your booking system (PlayByPoint, CourtReserve, etc.)
               to import players, visits, and payments.
             </p>

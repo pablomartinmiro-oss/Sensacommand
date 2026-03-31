@@ -57,19 +57,19 @@ export function GoalsTable({ goals, onGoalClick, onStatusChange }: GoalsTablePro
     <div className="overflow-x-auto border border-brand-border rounded-lg">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-brand-border bg-zinc-900/50">
-            <th className="text-left px-4 py-3 text-zinc-400 font-medium cursor-pointer hover:text-zinc-200" onClick={() => handleSort('title')}>
+          <tr className="border-b border-brand-border bg-[#F8F7F4]">
+            <th className="text-left px-4 py-3 text-[#6B7280] font-medium cursor-pointer hover:text-[#1A1A2E]" onClick={() => handleSort('title')}>
               Title <SortIcon field="title" />
             </th>
-            <th className="text-left px-4 py-3 text-zinc-400 font-medium">Assignee(s)</th>
-            <th className="text-left px-4 py-3 text-zinc-400 font-medium cursor-pointer hover:text-zinc-200" onClick={() => handleSort('status')}>
+            <th className="text-left px-4 py-3 text-[#6B7280] font-medium">Assignee(s)</th>
+            <th className="text-left px-4 py-3 text-[#6B7280] font-medium cursor-pointer hover:text-[#1A1A2E]" onClick={() => handleSort('status')}>
               Status <SortIcon field="status" />
             </th>
-            <th className="text-left px-4 py-3 text-zinc-400 font-medium cursor-pointer hover:text-zinc-200" onClick={() => handleSort('priority')}>
+            <th className="text-left px-4 py-3 text-[#6B7280] font-medium cursor-pointer hover:text-[#1A1A2E]" onClick={() => handleSort('priority')}>
               Priority <SortIcon field="priority" />
             </th>
-            <th className="text-left px-4 py-3 text-zinc-400 font-medium">Categories</th>
-            <th className="text-left px-4 py-3 text-zinc-400 font-medium cursor-pointer hover:text-zinc-200" onClick={() => handleSort('dueDate')}>
+            <th className="text-left px-4 py-3 text-[#6B7280] font-medium">Categories</th>
+            <th className="text-left px-4 py-3 text-[#6B7280] font-medium cursor-pointer hover:text-[#1A1A2E]" onClick={() => handleSort('dueDate')}>
               Due Date <SortIcon field="dueDate" />
             </th>
           </tr>
@@ -81,17 +81,17 @@ export function GoalsTable({ goals, onGoalClick, onStatusChange }: GoalsTablePro
               <tr
                 key={goal.id}
                 className={cn(
-                  'border-b border-brand-border hover:bg-zinc-800/30 cursor-pointer transition-colors',
+                  'border-b border-brand-border hover:bg-[#F0EFE9]/30 cursor-pointer transition-colors',
                   'border-l-[3px]',
                   GOAL_PRIORITY_COLORS[goal.priority]
                 )}
                 onClick={() => onGoalClick(goal.id)}
               >
-                <td className="px-4 py-3 text-zinc-100 max-w-xs truncate">{goal.title}</td>
+                <td className="px-4 py-3 text-[#1A1A2E] max-w-xs truncate">{goal.title}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1">
                     {goal.assignees.map((a) => (
-                      <span key={a.id} className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-zinc-700 text-[10px] font-medium text-zinc-300" title={`${a.firstName} ${a.lastName}`}>
+                      <span key={a.id} className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#E8E4DD] text-[10px] font-medium text-[#374151]" title={`${a.firstName} ${a.lastName}`}>
                         {a.firstName[0]}{a.lastName[0]}
                       </span>
                     ))}
@@ -104,21 +104,21 @@ export function GoalsTable({ goals, onGoalClick, onStatusChange }: GoalsTablePro
                     className={cn('text-xs rounded-full border px-2 py-1 font-medium bg-transparent focus:outline-none', GOAL_STATUS_COLORS[goal.status])}
                   >
                     {STATUSES.map((s) => (
-                      <option key={s} value={s} className="bg-zinc-900 text-zinc-100">{GOAL_STATUS_LABELS[s]}</option>
+                      <option key={s} value={s} className="bg-white text-[#1A1A2E]">{GOAL_STATUS_LABELS[s]}</option>
                     ))}
                   </select>
                 </td>
-                <td className="px-4 py-3 text-xs text-zinc-400">{goal.priority !== 'NONE' ? goal.priority : '—'}</td>
+                <td className="px-4 py-3 text-xs text-[#6B7280]">{goal.priority !== 'NONE' ? goal.priority : '—'}</td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1">
                     {goal.categories.slice(0, 2).map((c) => (
-                      <span key={c} className={cn('text-[10px] rounded-full border px-1.5 py-0.5 font-medium', GOAL_CATEGORY_COLORS[c] || 'bg-zinc-500/15 text-zinc-400 border-zinc-500/25')}>
+                      <span key={c} className={cn('text-[10px] rounded-full border px-1.5 py-0.5 font-medium', GOAL_CATEGORY_COLORS[c] || 'bg-zinc-500/15 text-[#6B7280] border-zinc-500/25')}>
                         {c}
                       </span>
                     ))}
                   </div>
                 </td>
-                <td className={cn('px-4 py-3 text-xs', isOverdue ? 'text-red-400' : 'text-zinc-400')}>
+                <td className={cn('px-4 py-3 text-xs', isOverdue ? 'text-red-400' : 'text-[#6B7280]')}>
                   {goal.dueDate ? formatDate(new Date(goal.dueDate)) : '—'}
                 </td>
               </tr>

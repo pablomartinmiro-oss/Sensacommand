@@ -56,14 +56,14 @@ export function Sidebar() {
             <span className="text-xl font-heading font-bold text-amber-500">
               Sensa
             </span>
-            <span className="text-xl font-heading font-bold text-white">
+            <span className="text-xl font-heading font-bold text-[#1A1A2E]">
               Command
             </span>
           </Link>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg hover:bg-brand-border text-brand-muted hover:text-white transition-colors"
+          className="p-1.5 rounded-lg hover:bg-brand-border text-brand-muted hover:text-[#1A1A2E] transition-colors"
         >
           {collapsed ? (
             <ChevronRight className="w-4 h-4" />
@@ -89,7 +89,7 @@ export function Sidebar() {
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                 isActive
                   ? 'bg-amber-500/10 text-amber-500'
-                  : 'text-brand-muted hover:text-white hover:bg-brand-border/50'
+                  : 'text-brand-muted hover:text-[#1A1A2E] hover:bg-[#F0EFE9]'
               )}
             >
               {Icon && <Icon className="w-5 h-5 flex-shrink-0" />}

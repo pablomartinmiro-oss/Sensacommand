@@ -125,17 +125,17 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#9CA3AF]" />
           <input
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search players..."
             className={cn(
-              'h-10 w-full rounded-lg border bg-zinc-900/60 pl-9 pr-3 text-sm text-zinc-100',
-              'placeholder:text-zinc-500',
-              'transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0a0a0f]',
-              'border-zinc-700 focus:ring-amber-500/50 focus:border-amber-500/60'
+              'h-10 w-full rounded-lg border bg-white pl-9 pr-3 text-sm text-[#1A1A2E]',
+              'placeholder:text-[#9CA3AF]',
+              'transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white',
+              'border-[#D1D5DB] focus:ring-amber-500/50 focus:border-amber-500/60'
             )}
           />
         </div>
@@ -174,7 +174,7 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
           <TableBody>
             {players.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-zinc-500 py-8">
+                <TableCell colSpan={7} className="text-center text-[#9CA3AF] py-8">
                   No players found
                 </TableCell>
               </TableRow>
@@ -185,14 +185,14 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
                 className="cursor-pointer"
                 onClick={() => router.push(`/players/${player.id}`)}
               >
-                <TableCell className="font-medium text-zinc-100">
+                <TableCell className="font-medium text-[#1A1A2E]">
                   {player.firstName} {player.lastName}
                 </TableCell>
                 <TableCell>
                   <span
                     className={cn(
                       'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium',
-                      STATUS_COLORS[player.status] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30'
+                      STATUS_COLORS[player.status] || 'bg-zinc-500/20 text-[#6B7280] border-zinc-500/30'
                     )}
                   >
                     {STATUS_LABELS[player.status] || player.status}
@@ -202,7 +202,7 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
                   <span
                     className={cn(
                       'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium',
-                      MEMBERSHIP_COLORS[player.membershipType] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30'
+                      MEMBERSHIP_COLORS[player.membershipType] || 'bg-zinc-500/20 text-[#6B7280] border-zinc-500/30'
                     )}
                   >
                     {MEMBERSHIP_LABELS[player.membershipType] || player.membershipType}
@@ -211,13 +211,13 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
                 <TableCell className="text-right">
                   {player._count.visits}
                 </TableCell>
-                <TableCell className="text-zinc-400">
+                <TableCell className="text-[#6B7280]">
                   {getLastVisit(player)}
                 </TableCell>
-                <TableCell className="text-right font-medium text-zinc-200">
+                <TableCell className="text-right font-medium text-[#1A1A2E]">
                   {formatCurrency(getLifetimeRevenue(player))}
                 </TableCell>
-                <TableCell className="text-zinc-400">
+                <TableCell className="text-[#6B7280]">
                   {player.phone || '-'}
                 </TableCell>
               </TableRow>
@@ -229,7 +229,7 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
       {/* Pagination */}
       {pagination.totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-[#9CA3AF]">
             Showing {(pagination.page - 1) * pagination.limit + 1}-
             {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
             {pagination.total} players
@@ -244,7 +244,7 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
               <ChevronLeft className="h-4 w-4" />
               Prev
             </Button>
-            <span className="text-sm text-zinc-400">
+            <span className="text-sm text-[#6B7280]">
               {pagination.page} / {pagination.totalPages}
             </span>
             <Button

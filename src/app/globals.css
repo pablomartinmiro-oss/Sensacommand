@@ -5,8 +5,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0f;
-  --foreground: #e5e5e5;
+  --background: #F8F7F4;
+  --foreground: #1A1A2E;
 }
 
 body {
@@ -26,26 +26,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: #F8F7F4;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a3a;
+  background: #D1D5DB;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a4a;
+  background: #9CA3AF;
 }
 
-/* Recharts dark theme overrides */
+/* Recharts light theme overrides */
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical line {
-  stroke: #1e1e2e;
+  stroke: #E8E4DD;
 }
 
 .recharts-text {
-  fill: #8888a0;
+  fill: #6B7280;
 }
 
 @layer utilities {

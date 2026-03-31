@@ -10,20 +10,20 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          dark: '#0a0a0f',
-          darker: '#06060a',
-          card: '#12121a',
-          border: '#1e1e2e',
-          muted: '#8888a0',
+          dark: '#F8F7F4',
+          darker: '#F0EFE9',
+          card: '#FFFFFF',
+          border: '#E8E4DD',
+          muted: '#6B7280',
         },
         amber: {
           400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
+          500: '#E8A838',
+          600: '#D4971F',
         },
         emerald: {
           400: '#34d399',
-          500: '#10b981',
+          500: '#22C55E',
           600: '#059669',
         },
       },

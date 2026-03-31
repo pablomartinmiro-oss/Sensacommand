@@ -16,11 +16,11 @@ export function Header({ title, action, onMenuToggle }: HeaderProps) {
         <div className="flex items-center gap-3">
           <button
             onClick={onMenuToggle}
-            className="lg:hidden p-2 rounded-lg hover:bg-brand-border text-brand-muted hover:text-white transition-colors"
+            className="lg:hidden p-2 rounded-lg hover:bg-brand-border text-brand-muted hover:text-[#1A1A2E] transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-heading font-semibold text-white">
+          <h1 className="text-lg font-heading font-semibold text-[#1A1A2E]">
             {title}
           </h1>
         </div>
@@ -28,7 +28,7 @@ export function Header({ title, action, onMenuToggle }: HeaderProps) {
           {action}
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
-            className="p-2 rounded-lg hover:bg-brand-border text-brand-muted hover:text-white transition-colors"
+            className="p-2 rounded-lg hover:bg-brand-border text-brand-muted hover:text-[#1A1A2E] transition-colors"
             title="Sign out"
           >
             <LogOut className="w-4 h-4" />

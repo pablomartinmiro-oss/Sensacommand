@@ -40,7 +40,7 @@ const TYPE_CONFIG: Record<
 const PRIORITY_DOT: Record<ActionItem['priority'], string> = {
   high: 'bg-red-500',
   medium: 'bg-amber-500',
-  low: 'bg-zinc-500',
+  low: 'bg-[#9CA3AF]',
 }
 
 function ActionRow({ item }: { item: ActionItem }) {
@@ -67,11 +67,11 @@ function ActionRow({ item }: { item: ActionItem }) {
           <span
             className={cn('inline-block h-1.5 w-1.5 rounded-full', PRIORITY_DOT[item.priority])}
           />
-          <p className="text-sm font-medium text-zinc-200">{item.title}</p>
+          <p className="text-sm font-medium text-[#1A1A2E]">{item.title}</p>
         </div>
-        <p className="mt-0.5 text-xs text-zinc-500">{item.description}</p>
+        <p className="mt-0.5 text-xs text-[#9CA3AF]">{item.description}</p>
         {item.playerName && (
-          <p className="mt-1 text-xs font-medium text-zinc-400">
+          <p className="mt-1 text-xs font-medium text-[#6B7280]">
             {item.playerName}
           </p>
         )}
@@ -102,19 +102,19 @@ export function ActionItems() {
 
   if (loading || !actions) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <SkeletonCard lines={8} className="border-0 p-0" />
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
-      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-zinc-500">
+    <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
+      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-[#9CA3AF]">
         Action Items
       </h3>
       {actions.length === 0 ? (
-        <p className="py-8 text-center text-sm text-zinc-600">
+        <p className="py-8 text-center text-sm text-[#9CA3AF]">
           Nothing to action right now. Nice.
         </p>
       ) : (

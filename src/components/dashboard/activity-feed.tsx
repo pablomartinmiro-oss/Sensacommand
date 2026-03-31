@@ -23,7 +23,7 @@ function ActivityRow({ item }: { item: ActivityFeedItem }) {
   const Icon = config.icon
 
   return (
-    <div className="flex items-start gap-3 py-2.5 border-b border-zinc-800/60 last:border-0">
+    <div className="flex items-start gap-3 py-2.5 border-b border-[#E8E4DD]/60 last:border-0">
       <div
         className={cn(
           'mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
@@ -33,10 +33,10 @@ function ActivityRow({ item }: { item: ActivityFeedItem }) {
         <Icon className="h-4 w-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-zinc-200 truncate">{item.title}</p>
-        <p className="text-xs text-zinc-500 truncate">{item.description}</p>
+        <p className="text-sm font-medium text-[#1A1A2E] truncate">{item.title}</p>
+        <p className="text-xs text-[#9CA3AF] truncate">{item.description}</p>
       </div>
-      <span className="shrink-0 text-xs text-zinc-600 whitespace-nowrap">
+      <span className="shrink-0 text-xs text-[#9CA3AF] whitespace-nowrap">
         {formatTimeAgo(item.timestamp)}
       </span>
     </div>
@@ -65,19 +65,19 @@ export function ActivityFeed() {
 
   if (loading || !items) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
+      <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
         <SkeletonCard lines={8} className="border-0 p-0" />
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-[#0f0f15] p-5">
-      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-zinc-500">
+    <div className="rounded-xl border border-[#E8E4DD] bg-white p-5">
+      <h3 className="mb-3 text-sm font-medium uppercase tracking-wider text-[#9CA3AF]">
         Today&apos;s Activity
       </h3>
       {items.length === 0 ? (
-        <p className="py-8 text-center text-sm text-zinc-600">
+        <p className="py-8 text-center text-sm text-[#9CA3AF]">
           No activity recorded today.
         </p>
       ) : (

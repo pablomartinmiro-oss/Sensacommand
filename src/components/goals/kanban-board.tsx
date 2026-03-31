@@ -39,10 +39,10 @@ export function KanbanBoard({ goals, onGoalClick, onStatusChange }: KanbanBoardP
                 GOAL_COLUMN_HEADER_COLORS[status]
               )}
             >
-              <span className="text-sm font-semibold text-zinc-200">
+              <span className="text-sm font-semibold text-[#1A1A2E]">
                 {GOAL_STATUS_LABELS[status]}
               </span>
-              <span className="text-xs font-medium text-zinc-400 bg-zinc-800 rounded-full px-2 py-0.5">
+              <span className="text-xs font-medium text-[#6B7280] bg-[#F0EFE9] rounded-full px-2 py-0.5">
                 {columnGoals.length}
               </span>
             </div>
@@ -54,7 +54,7 @@ export function KanbanBoard({ goals, onGoalClick, onStatusChange }: KanbanBoardP
                   <GoalCard goal={goal} onClick={() => onGoalClick(goal.id)} />
                   {/* Quick status change */}
                   <select
-                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] bg-zinc-800 border border-zinc-700 rounded px-1 py-0.5 text-zinc-300 focus:outline-none"
+                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] bg-[#F0EFE9] border border-[#D1D5DB] rounded px-1 py-0.5 text-[#374151] focus:outline-none"
                     value={goal.status}
                     onClick={(e) => e.stopPropagation()}
                     onChange={(e) => {
