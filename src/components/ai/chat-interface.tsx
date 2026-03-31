@@ -22,6 +22,42 @@ interface ConversationFull {
   messages: AIMessage[]
 }
 
+/**
+ * Extract displayable text from a message content field.
+ * Stored messages may have content as:
+ * - A plain string (user messages, simple assistant responses)
+ * - A stringified JSON array containing tool_use, tool_result, and text blocks
+ * We only want to display text blocks.
+ */
+function extractDisplayText(content: string): string | null {
+  if (!content) return null
+
+  // If it looks like a JSON array, try to parse and extract text blocks
+  const trimmed = content.trim()
+  if (trimmed.startsWith('[')) {
+    try {
+      const blocks = JSON.parse(trimmed)
+      if (Array.isArray(blocks)) {
+        const textParts = blocks
+          .filter((b: { type?: string }) => b.type === 'text')
+          .map((b: { text?: string }) => b.text || '')
+          .filter((t: string) => t.length > 0)
+        // If there are text blocks, join them; if only tool blocks, return null (hide message)
+        return textParts.length > 0 ? textParts.join('\n') : null
+      }
+    } catch {
+      // Not valid JSON — treat as plain text
+    }
+  }
+
+  // If it looks like a single tool_result JSON object, hide it
+  if (trimmed.startsWith('{') && (trimmed.includes('"type":"tool_result"') || trimmed.includes('"type":"tool_use"'))) {
+    return null
+  }
+
+  return content
+}
+
 // Basic markdown rendering for AI responses
 function renderMarkdown(text: string): string {
   const html = text
@@ -102,7 +138,15 @@ export function ChatInterface() {
       if (!res.ok) throw new Error()
       const json = await res.json()
       const conv = json.data as ConversationFull
-      setMessages(conv.messages || [])
+      // Filter out messages that are purely tool_use/tool_result blocks
+      const displayable = (conv.messages || []).filter(m => {
+        const text = extractDisplayText(m.content)
+        return text !== null && text.length > 0
+      }).map(m => ({
+        ...m,
+        content: extractDisplayText(m.content) || m.content,
+      }))
+      setMessages(displayable)
     } catch {
       toast('error', 'Failed to load conversation')
     } finally {

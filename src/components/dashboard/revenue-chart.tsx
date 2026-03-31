@@ -37,10 +37,11 @@ function ChartTooltipContent({
   if (!active || !payload?.length) return null
 
   const total = payload.reduce((sum, entry) => sum + entry.value, 0)
+  const formattedLabel = label ? (() => { try { return new Date(label).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch { return label; } })() : ''
 
   return (
     <div className="rounded-lg border border-[#D1D5DB] bg-white p-3 shadow-xl">
-      <p className="mb-2 text-xs font-medium text-[#6B7280]">{label}</p>
+      <p className="mb-2 text-xs font-medium text-[#6B7280]">{formattedLabel}</p>
       {payload.map((entry) => (
         <div key={entry.name} className="flex items-center justify-between gap-4 text-xs">
           <span className="flex items-center gap-1.5">

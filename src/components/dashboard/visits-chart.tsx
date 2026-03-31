@@ -28,9 +28,11 @@ function VisitTooltipContent({
 }) {
   if (!active || !payload?.length) return null
 
+  const formattedLabel = label ? (() => { try { return new Date(label).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch { return label; } })() : ''
+
   return (
     <div className="rounded-lg border border-[#D1D5DB] bg-white p-3 shadow-xl">
-      <p className="mb-1 text-xs font-medium text-[#6B7280]">{label}</p>
+      <p className="mb-1 text-xs font-medium text-[#6B7280]">{formattedLabel}</p>
       <p className="text-sm font-semibold text-amber-400">
         {payload[0].value} visit{payload[0].value !== 1 ? 's' : ''}
       </p>

@@ -33,9 +33,9 @@ export async function GET() {
       }
     }
 
-    const trend = Object.entries(countsByDate).map(([date, count]) => ({
+    const trend = Object.entries(countsByDate).map(([date, visits]) => ({
       date,
-      count,
+      visits,
     }))
 
     return NextResponse.json({ data: trend })
