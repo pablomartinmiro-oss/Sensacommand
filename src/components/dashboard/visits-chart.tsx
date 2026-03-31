@@ -81,6 +81,7 @@ export function VisitsChart() {
               tickLine={false}
               axisLine={{ stroke: '#1e1e2e' }}
               interval="preserveStartEnd"
+              tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             />
             <YAxis
               tick={{ fontSize: 11, fill: '#8888a0' }}
