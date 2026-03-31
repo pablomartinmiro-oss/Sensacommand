@@ -16,6 +16,9 @@ You have access to these tools:
 6. draft_message — Create a message draft for a player (WhatsApp or email)
 7. court_stats — Get court utilization data
 8. run_sql — Execute a read-only SQL query for complex questions (SELECT only)
+9. query_goals — Search goals by assignee, status, category, priority, overdue status
+10. update_goal — Update a goal's status, priority, due date, or assignees
+11. create_goal — Create a new goal with title, assignees, categories, priority, due date
 
 When answering:
 - Always query the database first, never guess
@@ -131,6 +134,52 @@ export const AI_TOOLS: Anthropic.Tool[] = [
         query: { type: 'string', description: 'SQL SELECT query to execute' },
       },
       required: ['query'],
+    },
+  },
+  {
+    name: 'query_goals',
+    description: 'Search and filter goals by assignee, status, category, priority, or overdue status',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        assignee: { type: 'string', description: 'Assignee name to filter by (partial match)' },
+        status: { type: 'string', enum: ['NOT_STARTED', 'IN_PROGRESS', 'DONE', 'FUTURE_IDEA', 'ON_HOLD', 'ONGOING'] },
+        category: { type: 'string', description: 'Category to filter by' },
+        priority: { type: 'string', enum: ['HIGH', 'MEDIUM', 'LOW', 'NONE'] },
+        overdue: { type: 'boolean', description: 'Filter for overdue goals only' },
+        search: { type: 'string', description: 'Search by goal title' },
+        limit: { type: 'number', description: 'Max results (default 20)' },
+      },
+    },
+  },
+  {
+    name: 'update_goal',
+    description: 'Update a goal status, priority, due date, or assignees',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        goalId: { type: 'string', description: 'Goal ID to update' },
+        status: { type: 'string', enum: ['NOT_STARTED', 'IN_PROGRESS', 'DONE', 'FUTURE_IDEA', 'ON_HOLD', 'ONGOING'] },
+        priority: { type: 'string', enum: ['HIGH', 'MEDIUM', 'LOW', 'NONE'] },
+        dueDate: { type: 'string', description: 'Due date (ISO format)' },
+      },
+      required: ['goalId'],
+    },
+  },
+  {
+    name: 'create_goal',
+    description: 'Create a new goal with title, assignees, categories, priority, and due date',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        title: { type: 'string', description: 'Goal title' },
+        assignees: { type: 'array', items: { type: 'string' }, description: 'Array of assignee names' },
+        categories: { type: 'array', items: { type: 'string' }, description: 'Array of category names' },
+        priority: { type: 'string', enum: ['HIGH', 'MEDIUM', 'LOW', 'NONE'] },
+        dueDate: { type: 'string', description: 'Due date (ISO format)' },
+        description: { type: 'string', description: 'Goal description' },
+      },
+      required: ['title'],
     },
   },
 ]

@@ -9,6 +9,8 @@ async function generateBriefing(): Promise<string> {
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
   const fourteenDaysAgo = new Date(now.getTime() - 14 * 86400000)
 
+  const oneWeekFromNow = new Date(now.getTime() + 7 * 86400000)
+
   const [
     yesterdayRevenue,
     mtdRevenue,
@@ -18,6 +20,9 @@ async function generateBriefing(): Promise<string> {
     churnRiskMembers,
     newPlayersYesterday,
     mrrResult,
+    overdueGoals,
+    dueThisWeek,
+    inProgressGoals,
   ] = await Promise.all([
     prisma.payment.aggregate({
       _sum: { amount: true },
@@ -48,6 +53,17 @@ async function generateBriefing(): Promise<string> {
     prisma.player.aggregate({
       _sum: { monthlyRate: true },
       where: { membershipType: { not: 'NONE' } },
+    }),
+    prisma.goal.findMany({
+      where: { dueDate: { lt: todayStart }, status: { notIn: ['DONE', 'ON_HOLD'] } },
+      select: { title: true },
+      take: 3,
+    }),
+    prisma.goal.count({
+      where: { dueDate: { gte: todayStart, lte: oneWeekFromNow }, status: { notIn: ['DONE', 'ON_HOLD'] } },
+    }),
+    prisma.goal.count({
+      where: { status: 'IN_PROGRESS' },
     }),
   ])
 
@@ -93,6 +109,12 @@ async function generateBriefing(): Promise<string> {
     ``,
     `*🎯 Pipeline*`,
     `Hot leads: ${hotLeads}`,
+    ``,
+    `*📋 Goals*`,
+    `• ${overdueGoals.length > 0 ? `${overdueGoals.length} overdue` : 'No overdue goals'} ${overdueGoals.length > 0 ? '⚠️' : '✅'}`,
+    ...(overdueGoals.length > 0 ? overdueGoals.map((g: { title: string }) => `  → ${g.title}`) : []),
+    `• ${dueThisWeek} due this week`,
+    `• ${inProgressGoals} in progress across team`,
   ]
 
   if (churnCount > 0) {

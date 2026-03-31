@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
   Users,
-  DollarSign,
+  Crosshair,
   Bot,
   MoreHorizontal,
 } from 'lucide-react'
@@ -16,6 +16,7 @@ import {
   Target,
   Crown,
   Grid3X3,
+  UsersRound,
   MessageSquare,
   Upload,
   Settings,
@@ -23,8 +24,8 @@ import {
 
 const BOTTOM_TABS = [
   { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { label: 'Goals', href: '/goals', icon: Crosshair },
   { label: 'Players', href: '/players', icon: Users },
-  { label: 'Revenue', href: '/revenue', icon: DollarSign },
   { label: 'AI', href: '/ai', icon: Bot },
   { label: 'More', href: '#more', icon: MoreHorizontal },
 ]
@@ -33,13 +34,15 @@ const MORE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   Target,
   Crown,
   Grid3X3,
+  Crosshair,
+  UsersRound,
   MessageSquare,
   Upload,
   Settings,
 }
 
 const MORE_ITEMS = NAV_ITEMS.filter(
-  (item) => !['/', '/players', '/revenue', '/ai'].includes(item.href)
+  (item) => !['/', '/players', '/goals', '/ai'].includes(item.href)
 )
 
 export function MobileNav() {

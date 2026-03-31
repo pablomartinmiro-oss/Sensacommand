@@ -102,9 +102,10 @@ model Player {
   notes               String?        @db.Text
   tags                String[]
 
-  visits   Visit[]
-  payments Payment[]
-  messages Message[]
+  visits       Visit[]
+  payments     Payment[]
+  messages     Message[]
+  linkedGoals  Goal[]     @relation("GoalLinkedPlayers")
 
   @@index([status])
   @@index([membershipType])
@@ -200,4 +201,87 @@ model Setting {
   id    String @id @default(cuid())
   key   String @unique
   value Json
+}
+
+// ---------------------------------------------------------------------------
+// Goals Module
+// ---------------------------------------------------------------------------
+
+enum TeamMemberRole {
+  GM
+  COACH
+  FRONT_DESK
+  MARKETING
+  OPERATIONS
+  FINANCE
+  PRO_SHOP
+}
+
+enum GoalStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  DONE
+  FUTURE_IDEA
+  ON_HOLD
+  ONGOING
+}
+
+enum GoalPriority {
+  HIGH
+  MEDIUM
+  LOW
+  NONE
+}
+
+model TeamMember {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  firstName String
+  lastName  String
+  email     String?        @unique
+  role      TeamMemberRole
+  isActive  Boolean        @default(true)
+
+  assignedGoals Goal[]       @relation("GoalAssignees")
+  comments      GoalComment[]
+
+  @@index([role])
+}
+
+model Goal {
+  id            String       @id @default(cuid())
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  title         String
+  description   String?      @db.Text
+  status        GoalStatus   @default(NOT_STARTED)
+  priority      GoalPriority @default(NONE)
+  categories    String[]
+  dueDate       DateTime?
+  dateRequested DateTime?
+  completedDate DateTime?
+  sortOrder     Int          @default(0)
+  notes         String?      @db.Text
+
+  assignees     TeamMember[]  @relation("GoalAssignees")
+  comments      GoalComment[]
+  linkedPlayers Player[]      @relation("GoalLinkedPlayers")
+
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+}
+
+model GoalComment {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  goalId    String
+  goal      Goal       @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    TeamMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body      String     @db.Text
+
+  @@index([goalId])
+  @@index([authorId])
 }

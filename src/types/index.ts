@@ -7,6 +7,9 @@ import type {
   MessageTemplate,
   AIConversation,
   Setting,
+  Goal,
+  TeamMember,
+  GoalComment,
 } from '@/generated/prisma/client'
 
 export type {
@@ -18,6 +21,9 @@ export type {
   MessageTemplate,
   AIConversation,
   Setting,
+  Goal,
+  TeamMember,
+  GoalComment,
 }
 
 export type PlayerWithRelations = Player & {
@@ -91,6 +97,31 @@ export interface AIMessage {
   role: 'user' | 'assistant'
   content: string
   timestamp: string
+}
+
+export type GoalWithRelations = Goal & {
+  assignees: TeamMember[]
+  comments: (GoalComment & { author: TeamMember })[]
+  linkedPlayers: Player[]
+  _count?: { comments: number }
+}
+
+export type GoalListItem = Goal & {
+  assignees: { id: string; firstName: string; lastName: string }[]
+  _count: { comments: number }
+}
+
+export type TeamMemberWithGoals = TeamMember & {
+  _count: { assignedGoals: number }
+  assignedGoals: { status: string }[]
+}
+
+export interface GoalsSummary {
+  total: number
+  inProgress: number
+  overdue: number
+  notStarted: number
+  done: number
 }
 
 export interface ApiResponse<T> {

@@ -37,6 +37,17 @@ interface ToolInput {
   customBody?: string
   subject?: string
   query?: string
+  // Goals tools
+  assignee?: string
+  category?: string
+  priority?: string
+  overdue?: boolean
+  goalId?: string
+  dueDate?: string
+  title?: string
+  assignees?: string[]
+  categories?: string[]
+  description?: string
 }
 
 // Types for Prisma query results used in callbacks
@@ -418,6 +429,118 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
         }
         const result = await prisma.$queryRawUnsafe(query)
         return JSON.stringify({ rows: result })
+      }
+
+      case 'query_goals': {
+        const where: Record<string, unknown> = {}
+        if (input.status) where.status = input.status
+        if (input.priority) where.priority = input.priority
+        if (input.category) where.categories = { has: input.category }
+        if (input.search) where.title = { contains: input.search, mode: 'insensitive' }
+        if (input.overdue) {
+          where.dueDate = { lt: new Date() }
+          where.status = { notIn: ['DONE', 'ON_HOLD'] }
+        }
+        if (input.assignee) {
+          where.assignees = {
+            some: {
+              OR: [
+                { firstName: { contains: input.assignee, mode: 'insensitive' } },
+                { lastName: { contains: input.assignee, mode: 'insensitive' } },
+              ],
+            },
+          }
+        }
+
+        const goals = await prisma.goal.findMany({
+          where,
+          take: input.limit || 20,
+          orderBy: { createdAt: 'desc' },
+          include: {
+            assignees: { select: { firstName: true, lastName: true } },
+          },
+        })
+
+        return JSON.stringify({
+          count: goals.length,
+          goals: goals.map(g => ({
+            id: g.id,
+            title: g.title,
+            status: g.status,
+            priority: g.priority,
+            categories: g.categories,
+            assignees: g.assignees.map(a => `${a.firstName} ${a.lastName}`),
+            dueDate: g.dueDate,
+            isOverdue: g.dueDate && new Date(g.dueDate) < new Date() && g.status !== 'DONE' && g.status !== 'ON_HOLD',
+          })),
+        })
+      }
+
+      case 'update_goal': {
+        if (!input.goalId) return JSON.stringify({ error: 'goalId is required' })
+        const updateData: Record<string, unknown> = {}
+        if (input.status) {
+          updateData.status = input.status
+          if (input.status === 'DONE') updateData.completedDate = new Date()
+        }
+        if (input.priority) updateData.priority = input.priority
+        if (input.dueDate) updateData.dueDate = new Date(input.dueDate)
+
+        const updated = await prisma.goal.update({
+          where: { id: input.goalId },
+          data: updateData,
+          include: { assignees: { select: { firstName: true, lastName: true } } },
+        })
+
+        return JSON.stringify({
+          success: true,
+          goal: {
+            id: updated.id,
+            title: updated.title,
+            status: updated.status,
+            priority: updated.priority,
+            assignees: updated.assignees.map(a => `${a.firstName} ${a.lastName}`),
+          },
+        })
+      }
+
+      case 'create_goal': {
+        if (!input.title) return JSON.stringify({ error: 'title is required' })
+
+        // Resolve assignee names to IDs
+        let assigneeConnect: { id: string }[] = []
+        if (input.assignees && input.assignees.length > 0) {
+          const allMembers = await prisma.teamMember.findMany({ where: { isActive: true } })
+          assigneeConnect = input.assignees.map(name => {
+            const member = allMembers.find(m =>
+              `${m.firstName} ${m.lastName}`.toLowerCase().includes(name.toLowerCase()) ||
+              m.firstName.toLowerCase().includes(name.toLowerCase())
+            )
+            return member ? { id: member.id } : null
+          }).filter((m): m is { id: string } => m !== null)
+        }
+
+        const created = await prisma.goal.create({
+          data: {
+            title: input.title,
+            description: input.description || null,
+            priority: (input.priority as 'HIGH' | 'MEDIUM' | 'LOW' | 'NONE') || 'NONE',
+            categories: input.categories || [],
+            dueDate: input.dueDate ? new Date(input.dueDate) : null,
+            assignees: assigneeConnect.length > 0 ? { connect: assigneeConnect } : undefined,
+          },
+          include: { assignees: { select: { firstName: true, lastName: true } } },
+        })
+
+        return JSON.stringify({
+          success: true,
+          goal: {
+            id: created.id,
+            title: created.title,
+            status: created.status,
+            assignees: created.assignees.map(a => `${a.firstName} ${a.lastName}`),
+          },
+        })
       }
 
       default:

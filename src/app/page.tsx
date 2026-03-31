@@ -5,6 +5,7 @@ import { VisitsChart } from '@/components/dashboard/visits-chart'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
 import { ActionItems } from '@/components/dashboard/action-items'
 import { QuickActions } from '@/components/dashboard/quick-actions'
+import { GoalsSummary } from '@/components/dashboard/goals-summary'
 
 export default function DashboardPage() {
   return (
@@ -24,10 +25,11 @@ export default function DashboardPage() {
           <VisitsChart />
         </div>
 
-        {/* Bottom Row: Activity Feed + Action Items */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Bottom Row: Activity Feed + Action Items + Goals */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           <ActivityFeed />
           <ActionItems />
+          <GoalsSummary />
         </div>
       </main>
     </>
