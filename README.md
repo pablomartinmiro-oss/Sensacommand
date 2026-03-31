@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sensa Command — GM Dashboard
 
-## Getting Started
+A GM Command Center for **Sensa Padel**, a 6-court padel club in Nashville, TN. Built for daily visibility into revenue, leads, members, court usage, and AI-powered insights — all in one dashboard.
 
-First, run the development server:
+## Features
+
+- **Dashboard** — Revenue, members, MRR, hot leads at a glance with charts
+- **Revenue Tracking** — Daily entry, history, category breakdown, charts
+- **Player Management** — Full CRM with search, filters, detail pages
+- **Lead Pipeline** — Kanban board with auto-scoring
+- **Member Management** — MRR tracking, churn risk, renewal alerts
+- **Court Utilization** — Heatmap visualization of booking density
+- **Message Center** — WhatsApp + Email templates, compose, send
+- **AI Agent** — Chat with Claude to query data and get insights
+- **CSV Import** — PlayByPoint data import with validation
+- **Telegram Briefings** — Automated morning summary via Telegram bot
+- **Settings** — Club config, pricing, integrations
+
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Database:** PostgreSQL + Prisma ORM
+- **AI:** Anthropic Claude API (tool_use pattern)
+- **Email:** Resend
+- **Notifications:** Telegram Bot API
+- **Styling:** Tailwind CSS (dark theme)
+- **Auth:** NextAuth.js v5
+
+## Local Setup
+
+### Prerequisites
+
+- Node.js 20+
+- PostgreSQL database
+- (Optional) Anthropic API key, Resend API key, Telegram bot token
+
+### Steps
 
 ```bash
+# 1. Clone and install
+git clone <repo-url>
+cd sensa-command
+npm install
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your database URL and credentials
+
+# 3. Set up database
+npx prisma migrate dev
+npx prisma db seed
+
+# 4. Run dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Demo Login
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Email:** pablo@sensapadel.com (or whatever you set in ADMIN_EMAIL)
+- **Password:** changeme (or whatever you set in ADMIN_PASSWORD)
 
-## Learn More
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | Yes | Random secret for session encryption |
+| `NEXTAUTH_URL` | Yes | App URL (http://localhost:3000 for dev) |
+| `ADMIN_EMAIL` | Yes | Login email |
+| `ADMIN_PASSWORD` | Yes | Login password |
+| `ANTHROPIC_API_KEY` | No | For AI chat agent |
+| `RESEND_API_KEY` | No | For email sending |
+| `RESEND_FROM_EMAIL` | No | Sender email address |
+| `TELEGRAM_BOT_TOKEN` | No | For Telegram briefings |
+| `TELEGRAM_CHAT_ID` | No | Telegram chat to send to |
+| `CLUB_NAME` | No | Club name (default: Sensa Padel) |
+| `CLUB_COURTS` | No | Number of courts (default: 6) |
+| `CLUB_TIMEZONE` | No | Timezone (default: America/Chicago) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy to Railway
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push code to GitHub
+2. Create new project on [Railway](https://railway.app)
+3. Add PostgreSQL plugin
+4. Set environment variables
+5. Railway will auto-detect the Dockerfile and deploy
 
-## Deploy on Vercel
+The `railway.json` configures:
+- Dockerfile build
+- Auto-run migrations on start
+- Health check at `/api/health`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Screenshots
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Coming soon*

@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PlayerSource {
+  WALK_IN
+  REFERRAL
+  SOCIAL_MEDIA
+  WEBSITE
+  PLAYBYPOINT
+  OTHER
+}
+
+enum PlayerStatus {
+  NEW
+  ACTIVE
+  HOT_LEAD
+  COLD_LEAD
+  CONVERTED
+  CHURNED
+}
+
+enum MembershipType {
+  NONE
+  STANDARD
+  UNLIMITED
+}
+
+enum VisitType {
+  CASUAL
+  MEMBER_SESSION
+  LESSON
+  TOURNAMENT
+  PRIVATE_EVENT
+}
+
+enum PaymentType {
+  COURT_RENTAL
+  MEMBERSHIP
+  LESSON
+  PRO_SHOP
+  EVENT
+  OTHER
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  TRANSFER
+  PLAYBYPOINT
+}
+
+enum MessageChannel {
+  WHATSAPP
+  EMAIL
+  SMS
+  IN_APP
+}
+
+enum MessageDirection {
+  OUTBOUND
+  INBOUND
+}
+
+enum MessageStatus {
+  DRAFT
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum TemplateCategory {
+  WELCOME
+  WIN_BACK
+  UPSELL
+  REMINDER
+  PROMO
+  CUSTOM
+}
+
+model Player {
+  id                  String         @id @default(cuid())
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  firstName           String
+  lastName            String
+  email               String?        @unique
+  phone               String?
+  whatsappPhone       String?
+  source              PlayerSource   @default(OTHER)
+  status              PlayerStatus   @default(NEW)
+  membershipType      MembershipType @default(NONE)
+  membershipStartDate DateTime?
+  membershipEndDate   DateTime?
+  monthlyRate         Decimal?
+  notes               String?        @db.Text
+  tags                String[]
+
+  visits   Visit[]
+  payments Payment[]
+  messages Message[]
+
+  @@index([status])
+  @@index([membershipType])
+  @@index([email])
+}
+
+model Visit {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  playerId    String
+  player      Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  courtNumber Int
+  date        DateTime  @db.Date
+  startTime   DateTime
+  endTime     DateTime
+  type        VisitType @default(CASUAL)
+  amountPaid  Decimal   @default(0)
+  notes       String?
+
+  @@index([playerId])
+  @@index([date])
+  @@index([courtNumber])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  playerId    String?
+  player      Player?       @relation(fields: [playerId], references: [id], onDelete: SetNull)
+  date        DateTime      @db.Date
+  amount      Decimal
+  type        PaymentType
+  method      PaymentMethod @default(CARD)
+  description String?
+  receiptRef  String?
+
+  @@index([playerId])
+  @@index([date])
+  @@index([type])
+}
+
+model DailyRevenue {
+  id           String   @id @default(cuid())
+  date         DateTime @unique @db.Date
+  courtRentals Decimal  @default(0)
+  memberships  Decimal  @default(0)
+  lessons      Decimal  @default(0)
+  proShop      Decimal  @default(0)
+  events       Decimal  @default(0)
+  other        Decimal  @default(0)
+  totalRevenue Decimal  @default(0)
+  notes        String?
+
+  @@index([date])
+}
+
+model Message {
+  id           String           @id @default(cuid())
+  createdAt    DateTime         @default(now())
+  playerId     String
+  player       Player           @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  channel      MessageChannel
+  direction    MessageDirection @default(OUTBOUND)
+  subject      String?
+  body         String           @db.Text
+  status       MessageStatus    @default(DRAFT)
+  templateUsed String?
+
+  @@index([playerId])
+  @@index([status])
+}
+
+model MessageTemplate {
+  id        String           @id @default(cuid())
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  name      String           @unique
+  channel   MessageChannel
+  category  TemplateCategory
+  subject   String?
+  body      String           @db.Text
+  isActive  Boolean          @default(true)
+}
+
+model AIConversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  messages  Json[]
+  title     String?
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+}
