@@ -124,6 +124,7 @@ export const NAV_ITEMS = [
   { label: 'Team', href: '/team', icon: 'UsersRound' },
   { label: 'Messages', href: '/messages', icon: 'MessageSquare' },
   { label: 'AI Agent', href: '/ai', icon: 'Bot' },
+  { label: 'Automations', href: '/automations', icon: 'Workflow' },
   { label: 'Import', href: '/import', icon: 'Upload' },
   { label: 'Settings', href: '/settings', icon: 'Settings' },
 ] as const

@@ -15,6 +15,7 @@ import {
   UsersRound,
   MessageSquare,
   Bot,
+  Workflow,
   Upload,
   Settings,
   ChevronLeft,
@@ -33,6 +34,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   UsersRound,
   MessageSquare,
   Bot,
+  Workflow,
   Upload,
   Settings,
 }

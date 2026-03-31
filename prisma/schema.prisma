@@ -102,10 +102,11 @@ model Player {
   notes               String?        @db.Text
   tags                String[]
 
-  visits       Visit[]
-  payments     Payment[]
-  messages     Message[]
-  linkedGoals  Goal[]     @relation("GoalLinkedPlayers")
+  visits          Visit[]
+  payments        Payment[]
+  messages        Message[]
+  linkedGoals     Goal[]           @relation("GoalLinkedPlayers")
+  automationLogs  AutomationLog[]
 
   @@index([status])
   @@index([membershipType])
@@ -284,4 +285,41 @@ model GoalComment {
 
   @@index([goalId])
   @@index([authorId])
+}
+
+// ---------------------------------------------------------------------------
+// Automation Engine
+// ---------------------------------------------------------------------------
+
+model AutomationLog {
+  id              String   @id @default(cuid())
+  automationType  String
+  targetPlayerId  String?
+  targetPlayer    Player?  @relation(fields: [targetPlayerId], references: [id])
+  action          String
+  message         String?  @db.Text
+  channel         String?
+  status          String
+  error           String?
+  dryRun          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@index([automationType])
+  @@index([targetPlayerId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model AutomationConfig {
+  id          String    @id @default(cuid())
+  type        String    @unique
+  name        String
+  description String
+  enabled     Boolean   @default(true)
+  schedule    String
+  lastRun     DateTime?
+  nextRun     DateTime?
+  config      Json      @default("{}")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

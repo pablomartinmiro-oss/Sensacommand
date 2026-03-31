@@ -18,6 +18,7 @@ import {
   Grid3X3,
   UsersRound,
   MessageSquare,
+  Workflow,
   Upload,
   Settings,
 } from 'lucide-react'
@@ -37,6 +38,7 @@ const MORE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   Crosshair,
   UsersRound,
   MessageSquare,
+  Workflow,
   Upload,
   Settings,
 }

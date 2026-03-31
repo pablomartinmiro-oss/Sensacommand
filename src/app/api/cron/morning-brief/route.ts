@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendTelegramMessage } from '@/lib/telegram'
+import { runDue } from '@/lib/automations/engine'
 
 async function generateBriefing(): Promise<string> {
   const now = new Date()
@@ -153,9 +154,12 @@ export async function POST(request: NextRequest) {
     const briefing = await generateBriefing()
     const sent = await sendTelegramMessage(briefing)
 
+    // Run due automations
+    const automationResults = await runDue()
+
     if (sent) {
       return NextResponse.json({
-        data: { success: true, message: 'Morning briefing sent', timestamp: new Date().toISOString() },
+        data: { success: true, message: 'Morning briefing sent', timestamp: new Date().toISOString(), automations: automationResults.length },
       })
     }
 
