@@ -155,7 +155,11 @@ export function ChatInterface() {
       }
 
       // Add assistant message
-      setMessages((prev) => [...prev, data.message])
+      setMessages((prev) => [...prev, {
+        role: 'assistant' as const,
+        content: data.response,
+        timestamp: new Date().toISOString(),
+      }])
       await fetchConversations()
     } catch {
       toast('error', 'Failed to get AI response')
@@ -192,7 +196,7 @@ export function ChatInterface() {
       {/* Sidebar */}
       <div
         className={cn(
-          'border-r border-[#E8E4DD] bg-[#0c0c12] transition-all duration-300 overflow-hidden',
+          'border-r border-[#E8E4DD] bg-white transition-all duration-300 overflow-hidden',
           sidebarOpen ? 'w-72' : 'w-0',
         )}
       >
@@ -291,7 +295,7 @@ export function ChatInterface() {
                     className={cn(
                       'max-w-[80%] rounded-xl px-4 py-3 text-sm',
                       msg.role === 'user'
-                        ? 'bg-amber-500/15 text-amber-100 border border-amber-500/20'
+                        ? 'bg-amber-50 text-[#1A1A2E] border border-amber-200'
                         : 'bg-[#F0EFE9] text-[#374151] border border-[#D1D5DB]/50',
                     )}
                   >
@@ -330,7 +334,7 @@ export function ChatInterface() {
         </div>
 
         {/* Input area */}
-        <div className="border-t border-[#E8E4DD] bg-[#0c0c12] px-4 py-3">
+        <div className="border-t border-[#E8E4DD] bg-white px-4 py-3">
           <div className="max-w-3xl mx-auto flex gap-3">
             <textarea
               ref={textareaRef}

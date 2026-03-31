@@ -76,7 +76,7 @@ export function ConversationList({
                 <p
                   className={cn(
                     'text-sm font-medium truncate',
-                    activeId === conv.id ? 'text-amber-300' : 'text-[#374151]',
+                    activeId === conv.id ? 'text-amber-700' : 'text-[#374151]',
                   )}
                 >
                   {conv.title || 'Untitled'}
