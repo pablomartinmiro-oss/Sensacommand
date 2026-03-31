@@ -122,6 +122,7 @@ export const NAV_ITEMS = [
   { label: 'Courts', href: '/courts', icon: 'Grid3X3' },
   { label: 'Goals', href: '/goals', icon: 'Crosshair' },
   { label: 'Team', href: '/team', icon: 'UsersRound' },
+  { label: 'Social', href: '/social', icon: 'Share2' },
   { label: 'Messages', href: '/messages', icon: 'MessageSquare' },
   { label: 'AI Agent', href: '/ai', icon: 'Bot' },
   { label: 'Automations', href: '/automations', icon: 'Workflow' },

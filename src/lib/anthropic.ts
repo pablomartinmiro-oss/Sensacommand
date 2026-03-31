@@ -19,6 +19,9 @@ You have access to these tools:
 9. query_goals — Search goals by assignee, status, category, priority, overdue status
 10. update_goal — Update a goal's status, priority, due date, or assignees
 11. create_goal — Create a new goal with title, assignees, categories, priority, due date
+12. create_social_post — Generate and create a social media post using AI
+13. query_social_posts — List/filter social media posts
+14. create_automation — Create a new automation from a plain-English description
 
 When answering:
 - Always query the database first, never guess
@@ -180,6 +183,42 @@ export const AI_TOOLS: Anthropic.Tool[] = [
         description: { type: 'string', description: 'Goal description' },
       },
       required: ['title'],
+    },
+  },
+  {
+    name: 'create_social_post',
+    description: 'Generate and create a social media post using AI. Generates platform-specific content.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        description: { type: 'string', description: 'What to post about' },
+        platform: { type: 'string', enum: ['INSTAGRAM', 'TIKTOK', 'FACEBOOK', 'LINKEDIN', 'ALL'], description: 'Target platform' },
+        scheduledFor: { type: 'string', description: 'Schedule date (ISO format, optional)' },
+      },
+      required: ['description'],
+    },
+  },
+  {
+    name: 'query_social_posts',
+    description: 'List and filter social media posts',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        platform: { type: 'string', enum: ['INSTAGRAM', 'TIKTOK', 'FACEBOOK', 'LINKEDIN', 'ALL'] },
+        status: { type: 'string', enum: ['DRAFT', 'SCHEDULED', 'POSTED', 'CANCELLED'] },
+        category: { type: 'string' },
+      },
+    },
+  },
+  {
+    name: 'create_automation',
+    description: 'Create a new automation from a plain-English description. The AI will interpret the description and set up the automation.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        description: { type: 'string', description: 'Plain-English description of the automation' },
+      },
+      required: ['description'],
     },
   },
 ]

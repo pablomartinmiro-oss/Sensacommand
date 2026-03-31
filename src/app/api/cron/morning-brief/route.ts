@@ -24,6 +24,9 @@ async function generateBriefing(): Promise<string> {
     overdueGoals,
     dueThisWeek,
     inProgressGoals,
+    socialScheduledToday,
+    socialDrafts,
+    socialPostedYesterday,
   ] = await Promise.all([
     prisma.payment.aggregate({
       _sum: { amount: true },
@@ -65,6 +68,15 @@ async function generateBriefing(): Promise<string> {
     }),
     prisma.goal.count({
       where: { status: 'IN_PROGRESS' },
+    }),
+    prisma.socialPost.count({
+      where: { status: 'SCHEDULED', scheduledFor: { gte: todayStart, lte: new Date(todayStart.getTime() + 86400000) } },
+    }),
+    prisma.socialPost.count({
+      where: { status: 'DRAFT' },
+    }),
+    prisma.socialPost.count({
+      where: { status: 'POSTED', postedAt: { gte: yesterdayStart, lt: todayStart } },
     }),
   ])
 
@@ -116,6 +128,11 @@ async function generateBriefing(): Promise<string> {
     ...(overdueGoals.length > 0 ? overdueGoals.map((g: { title: string }) => `  → ${g.title}`) : []),
     `• ${dueThisWeek} due this week`,
     `• ${inProgressGoals} in progress across team`,
+    ``,
+    `*📱 Social Media*`,
+    `• ${socialScheduledToday} posts scheduled today`,
+    `• ${socialDrafts} drafts need attention`,
+    `• ${socialPostedYesterday} posts went out yesterday`,
   ]
 
   if (churnCount > 0) {

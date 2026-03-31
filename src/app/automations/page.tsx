@@ -5,7 +5,8 @@ import { Header } from '@/components/layout/header'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { formatTimeAgo } from '@/lib/utils'
-import { Play, Eye, Zap, Clock } from 'lucide-react'
+import { Play, Eye, Zap, Clock, Sparkles } from 'lucide-react'
+import { Modal } from '@/components/ui/modal'
 
 interface AutomationStatus {
   id: string
@@ -34,6 +35,9 @@ export default function AutomationsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [running, setRunning] = useState<string | null>(null)
+  const [showAiCreate, setShowAiCreate] = useState(false)
+  const [aiPrompt, setAiPrompt] = useState('')
+  const [aiCreating, setAiCreating] = useState(false)
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -81,6 +85,22 @@ export default function AutomationsPage() {
     } catch { /* ignore */ }
   }
 
+  const handleAiCreate = async () => {
+    if (!aiPrompt.trim()) return
+    setAiCreating(true)
+    try {
+      await fetch('/api/automations/ai-create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: aiPrompt }),
+      })
+      setAiPrompt('')
+      setShowAiCreate(false)
+      await fetchStatus()
+    } catch { /* ignore */ }
+    setAiCreating(false)
+  }
+
   // Stats
   const today = new Date().toISOString().split('T')[0]
   const todayLogs = logs.filter(l => l.createdAt.startsWith(today))
@@ -94,7 +114,14 @@ export default function AutomationsPage() {
 
   return (
     <>
-      <Header title="Automations" />
+      <Header
+        title="Automations"
+        action={
+          <button onClick={() => setShowAiCreate(true)} className="flex items-center gap-2 h-9 px-4 rounded-lg bg-amber-500 text-black text-sm font-semibold hover:bg-amber-600 transition-colors">
+            <Sparkles className="w-4 h-4" /> Create with AI
+          </button>
+        }
+      />
 
       <main className="flex-1 overflow-y-auto px-4 py-6 lg:px-6 space-y-6">
         {/* Stats row */}
@@ -217,6 +244,30 @@ export default function AutomationsPage() {
           </div>
         </div>
       </main>
+
+      <Modal open={showAiCreate} onClose={() => setShowAiCreate(false)} title="Create Automation with AI" maxWidth="max-w-lg">
+        <div className="space-y-4">
+          <textarea
+            value={aiPrompt}
+            onChange={e => setAiPrompt(e.target.value)}
+            placeholder="Describe what you want to automate in plain English..."
+            rows={4}
+            className="w-full rounded-lg border border-[#D1D5DB] bg-white px-3 py-2 text-sm text-[#1A1A2E] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-none"
+          />
+          <div className="text-[10px] text-[#9CA3AF] space-y-1">
+            <p>Examples:</p>
+            <p>&bull; When someone plays 3 times in a month but isn&apos;t a member, draft a WhatsApp offering them the Standard membership</p>
+            <p>&bull; Every Monday morning, send me a Telegram with a summary of last week&apos;s revenue</p>
+            <p>&bull; If a member hasn&apos;t visited in 21 days, mark them as at-risk and draft a personal check-in message</p>
+          </div>
+          <div className="flex justify-end gap-2">
+            <button onClick={() => setShowAiCreate(false)} className="h-9 px-4 rounded-lg text-sm text-[#6B7280]">Cancel</button>
+            <button onClick={handleAiCreate} disabled={aiCreating || !aiPrompt.trim()} className="h-9 px-4 rounded-lg bg-amber-500 text-black text-sm font-semibold disabled:opacity-50 hover:bg-amber-600 transition-colors">
+              {aiCreating ? 'Creating...' : 'Create Automation'}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </>
   )
 }

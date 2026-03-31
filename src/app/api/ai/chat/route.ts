@@ -48,6 +48,9 @@ interface ToolInput {
   assignees?: string[]
   categories?: string[]
   description?: string
+  // Social tools
+  platform?: string
+  scheduledFor?: string
 }
 
 // Types for Prisma query results used in callbacks
@@ -539,6 +542,90 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
             title: created.title,
             status: created.status,
             assignees: created.assignees.map(a => `${a.firstName} ${a.lastName}`),
+          },
+        })
+      }
+
+      case 'create_social_post': {
+        if (!input.description) return JSON.stringify({ error: 'description is required' })
+        const platform = input.platform || 'INSTAGRAM'
+
+        // Generate content via internal API call
+        const genRes = await fetch(new URL('/api/social/posts/generate', 'http://localhost:3000'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ description: input.description, platform }),
+        })
+
+        let content = input.description
+        let hashtags: string[] = []
+        if (genRes.ok) {
+          const genData = await genRes.json()
+          const key = platform.toLowerCase()
+          const postData = genData.data?.[key] || Object.values(genData.data || {})[0] as { content?: string; hashtags?: string[] } | undefined
+          if (postData && typeof postData === 'object' && 'content' in postData) {
+            content = (postData as { content: string }).content
+            hashtags = ((postData as { hashtags?: string[] }).hashtags) || []
+          }
+        }
+
+        const post = await prisma.socialPost.create({
+          data: {
+            title: input.description.slice(0, 60),
+            content,
+            platform,
+            hashtags,
+            status: input.scheduledFor ? 'SCHEDULED' : 'DRAFT',
+            scheduledFor: input.scheduledFor ? new Date(input.scheduledFor) : null,
+          },
+        })
+
+        return JSON.stringify({ success: true, post: { id: post.id, title: post.title, platform, status: post.status, content: content.slice(0, 200) } })
+      }
+
+      case 'query_social_posts': {
+        const where: Record<string, unknown> = {}
+        if (input.platform) where.platform = input.platform
+        if (input.status) where.status = input.status
+        if (input.category) where.category = input.category
+
+        const socialPosts = await prisma.socialPost.findMany({
+          where,
+          take: 20,
+          orderBy: { createdAt: 'desc' },
+        })
+
+        return JSON.stringify({
+          count: socialPosts.length,
+          posts: socialPosts.map(p => ({
+            id: p.id, title: p.title, platform: p.platform, status: p.status,
+            category: p.category, scheduledFor: p.scheduledFor,
+          })),
+        })
+      }
+
+      case 'create_automation': {
+        if (!input.description) return JSON.stringify({ error: 'description is required' })
+
+        const autoRes = await fetch(new URL('/api/automations/ai-create', 'http://localhost:3000'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ description: input.description }),
+        })
+
+        if (!autoRes.ok) {
+          const err = await autoRes.json()
+          return JSON.stringify({ error: err.error || 'Failed to create automation' })
+        }
+
+        const autoData = await autoRes.json()
+        return JSON.stringify({
+          success: true,
+          automation: {
+            name: autoData.data.automation.name,
+            description: autoData.data.automation.description,
+            type: autoData.data.automation.type,
+            enabled: autoData.data.automation.enabled,
           },
         })
       }

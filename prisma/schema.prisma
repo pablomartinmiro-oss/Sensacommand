@@ -311,15 +311,63 @@ model AutomationLog {
 }
 
 model AutomationConfig {
+  id            String    @id @default(cuid())
+  type          String    @unique
+  name          String
+  description   String
+  enabled       Boolean   @default(true)
+  schedule      String
+  lastRun       DateTime?
+  nextRun       DateTime?
+  config        Json      @default("{}")
+  createdBy     String?
+  aiPrompt      String?   @db.Text
+  triggerType   String?
+  actionType    String?
+  triggerConfig Json?
+  actionConfig  Json?
+  conditions    Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Social Media
+// ---------------------------------------------------------------------------
+
+model SocialPost {
   id          String    @id @default(cuid())
-  type        String    @unique
-  name        String
-  description String
-  enabled     Boolean   @default(true)
-  schedule    String
-  lastRun     DateTime?
-  nextRun     DateTime?
-  config      Json      @default("{}")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  title       String
+  content     String    @db.Text
+  platform    String
+  mediaType   String?
+  mediaUrl    String?
+  hashtags    String[]
+  scheduledFor DateTime?
+  status      String    @default("DRAFT")
+  postedAt    DateTime?
+  notes       String?   @db.Text
+  category    String?
+  createdById String?
+  metrics     Json?
+  campaignId  String?
+  campaign    SocialCampaign? @relation(fields: [campaignId], references: [id])
+
+  @@index([status])
+  @@index([platform])
+  @@index([scheduledFor])
+  @@index([campaignId])
+}
+
+model SocialCampaign {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  name        String
+  description String?  @db.Text
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("ACTIVE")
+  posts       SocialPost[]
 }
