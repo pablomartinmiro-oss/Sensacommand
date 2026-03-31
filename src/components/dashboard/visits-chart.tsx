@@ -74,17 +74,17 @@ export function VisitsChart() {
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 0, right: 0, left: -10, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e1e2e" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E8E4DD" vertical={false} />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 11, fill: '#8888a0' }}
+              tick={{ fontSize: 11, fill: '#6B7280' }}
               tickLine={false}
-              axisLine={{ stroke: '#1e1e2e' }}
+              axisLine={{ stroke: '#E8E4DD' }}
               interval="preserveStartEnd"
               tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             />
             <YAxis
-              tick={{ fontSize: 11, fill: '#8888a0' }}
+              tick={{ fontSize: 11, fill: '#6B7280' }}
               tickLine={false}
               axisLine={false}
               allowDecimals={false}

@@ -156,22 +156,22 @@ export function RevenueCharts({ refreshKey }: RevenueChartsProps) {
         ) : (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={barData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e1e2e" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E8E4DD" />
               <XAxis
                 dataKey="category"
-                tick={{ fill: '#8888a0', fontSize: 11 }}
-                axisLine={{ stroke: '#2a2a3a' }}
+                tick={{ fill: '#6B7280', fontSize: 11 }}
+                axisLine={{ stroke: '#E8E4DD' }}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fill: '#8888a0', fontSize: 11 }}
-                axisLine={{ stroke: '#2a2a3a' }}
+                tick={{ fill: '#6B7280', fontSize: 11 }}
+                axisLine={{ stroke: '#E8E4DD' }}
                 tickLine={false}
                 tickFormatter={(v: number) => `$${v}`}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend
-                wrapperStyle={{ fontSize: 12, color: '#8888a0' }}
+                wrapperStyle={{ fontSize: 12, color: '#6B7280' }}
               />
               <Bar
                 dataKey="thisMonth"
