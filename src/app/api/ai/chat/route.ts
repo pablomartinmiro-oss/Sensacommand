@@ -51,6 +51,12 @@ interface ToolInput {
   // Social tools
   platform?: string
   scheduledFor?: string
+  // Review tools
+  teamMember?: string
+  question?: string
+  goalIds?: string[]
+  daysOverdue?: number
+  newDate?: string
 }
 
 // Types for Prisma query results used in callbacks
@@ -601,6 +607,136 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
             id: p.id, title: p.title, platform: p.platform, status: p.status,
             category: p.category, scheduledFor: p.scheduledFor,
           })),
+        })
+      }
+
+      case 'daily_priorities': {
+        const today = new Date()
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        const weekAgo = new Date(todayStart.getTime() - 7 * 86400000)
+
+        const [dueToday, overdueHigh, drafts, weekRevenue] = await Promise.all([
+          prisma.goal.findMany({ where: { dueDate: { gte: todayStart, lt: new Date(todayStart.getTime() + 86400000) }, status: { notIn: ['DONE', 'ON_HOLD'] } }, include: { assignees: { select: { firstName: true } } }, take: 5 }),
+          prisma.goal.findMany({ where: { dueDate: { lt: todayStart }, status: { notIn: ['DONE', 'ON_HOLD'] }, priority: 'HIGH' }, include: { assignees: { select: { firstName: true } } }, take: 5 }),
+          prisma.message.count({ where: { status: 'DRAFT' } }),
+          prisma.payment.aggregate({ _sum: { amount: true }, where: { date: { gte: weekAgo } } }),
+        ])
+
+        return JSON.stringify({
+          goalsDueToday: dueToday.map(g => ({ title: g.title, assignees: g.assignees.map(a => a.firstName) })),
+          overdueHighPriority: overdueHigh.map(g => ({ title: g.title, assignees: g.assignees.map(a => a.firstName) })),
+          draftMessagesWaiting: drafts,
+          weekRevenue: Number(weekRevenue._sum.amount ?? 0),
+        })
+      }
+
+      case 'team_status': {
+        const members = await prisma.teamMember.findMany({
+          where: input.teamMember ? { OR: [{ firstName: { contains: input.teamMember, mode: 'insensitive' } }, { lastName: { contains: input.teamMember, mode: 'insensitive' } }] } : { isActive: true },
+          include: { assignedGoals: { select: { status: true, dueDate: true, completedDate: true } } },
+        })
+
+        const now = new Date()
+        const weekAgo = new Date(now.getTime() - 7 * 86400000)
+
+        return JSON.stringify(members.map(m => ({
+          name: `${m.firstName} ${m.lastName}`,
+          role: m.role,
+          inProgress: m.assignedGoals.filter(g => g.status === 'IN_PROGRESS').length,
+          overdue: m.assignedGoals.filter(g => g.dueDate && new Date(g.dueDate) < now && g.status !== 'DONE' && g.status !== 'ON_HOLD').length,
+          completedThisWeek: m.assignedGoals.filter(g => g.status === 'DONE' && g.completedDate && new Date(g.completedDate) >= weekAgo).length,
+          dueThisWeek: m.assignedGoals.filter(g => g.dueDate && new Date(g.dueDate) >= now && new Date(g.dueDate) <= new Date(now.getTime() + 7 * 86400000) && g.status !== 'DONE').length,
+          total: m.assignedGoals.length,
+        })))
+      }
+
+      case 'goal_insights': {
+        const allGoals = await prisma.goal.findMany({
+          include: { assignees: { select: { firstName: true, lastName: true } } },
+        })
+        const now = new Date()
+        const overdue = allGoals.filter(g => g.dueDate && new Date(g.dueDate) < now && g.status !== 'DONE' && g.status !== 'ON_HOLD')
+
+        // Group overdue by category
+        const byCategory: Record<string, number> = {}
+        overdue.forEach(g => g.categories.forEach(c => { byCategory[c] = (byCategory[c] || 0) + 1 }))
+
+        // Most stuck (oldest overdue)
+        const stuckest = overdue.sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime()).slice(0, 5)
+
+        // Completions by assignee
+        const completions: Record<string, number> = {}
+        allGoals.filter(g => g.status === 'DONE').forEach(g => g.assignees.forEach(a => { const n = `${a.firstName} ${a.lastName}`; completions[n] = (completions[n] || 0) + 1 }))
+
+        return JSON.stringify({
+          question: input.question,
+          totalGoals: allGoals.length,
+          overdueCount: overdue.length,
+          overdueByCategory: byCategory,
+          longestStuck: stuckest.map(g => ({ title: g.title, daysOverdue: Math.ceil((now.getTime() - new Date(g.dueDate!).getTime()) / 86400000), assignees: g.assignees.map(a => `${a.firstName} ${a.lastName}`) })),
+          completionsByAssignee: completions,
+        })
+      }
+
+      case 'snooze_goals': {
+        if (!input.newDate) return JSON.stringify({ error: 'newDate is required' })
+        const newDueDate = new Date(input.newDate)
+        const now = new Date()
+
+        let goalIds: string[] = input.goalIds || []
+
+        if (!goalIds.length && input.assignee) {
+          const goals = await prisma.goal.findMany({
+            where: { dueDate: { lt: now }, status: { notIn: ['DONE', 'ON_HOLD'] }, assignees: { some: { OR: [{ firstName: { contains: input.assignee, mode: 'insensitive' } }, { lastName: { contains: input.assignee, mode: 'insensitive' } }] } } },
+            select: { id: true },
+          })
+          goalIds = goals.map(g => g.id)
+        }
+
+        if (!goalIds.length && input.daysOverdue) {
+          const cutoff = new Date(now.getTime() - input.daysOverdue * 86400000)
+          const goals = await prisma.goal.findMany({
+            where: { dueDate: { lt: cutoff }, status: { notIn: ['DONE', 'ON_HOLD'] } },
+            select: { id: true },
+          })
+          goalIds = goals.map(g => g.id)
+        }
+
+        if (goalIds.length === 0) return JSON.stringify({ snoozed: 0, message: 'No matching goals found' })
+
+        await prisma.goal.updateMany({ where: { id: { in: goalIds } }, data: { dueDate: newDueDate } })
+        await prisma.goalActivity.createMany({
+          data: goalIds.map(id => ({ goalId: id, action: 'SNOOZED', toValue: newDueDate.toISOString(), performedBy: 'AI' })),
+        })
+
+        return JSON.stringify({ snoozed: goalIds.length, newDate: newDueDate.toISOString() })
+      }
+
+      case 'weekly_summary': {
+        const now = new Date()
+        const weekAgo = new Date(now.getTime() - 7 * 86400000)
+        const twoWeeksAgo = new Date(now.getTime() - 14 * 86400000)
+
+        const [completed, newOverdue, thisWeekRev, lastWeekRev, newMembers, churned, newPlayers] = await Promise.all([
+          prisma.goal.count({ where: { status: 'DONE', completedDate: { gte: weekAgo } } }),
+          prisma.goal.count({ where: { dueDate: { gte: weekAgo, lt: now }, status: { notIn: ['DONE', 'ON_HOLD'] } } }),
+          prisma.payment.aggregate({ _sum: { amount: true }, where: { date: { gte: weekAgo } } }),
+          prisma.payment.aggregate({ _sum: { amount: true }, where: { date: { gte: twoWeeksAgo, lt: weekAgo } } }),
+          prisma.player.count({ where: { membershipType: { not: 'NONE' }, membershipStartDate: { gte: weekAgo } } }),
+          prisma.player.count({ where: { status: 'CHURNED', updatedAt: { gte: weekAgo } } }),
+          prisma.player.count({ where: { createdAt: { gte: weekAgo } } }),
+        ])
+
+        const twRev = Number(thisWeekRev._sum.amount ?? 0)
+        const lwRev = Number(lastWeekRev._sum.amount ?? 0)
+
+        return JSON.stringify({
+          goalsCompleted: completed,
+          goalsBecameOverdue: newOverdue,
+          revenue: { thisWeek: twRev, lastWeek: lwRev, change: lwRev > 0 ? Math.round(((twRev - lwRev) / lwRev) * 100) : null },
+          newMembers,
+          churned,
+          newPlayers,
         })
       }
 

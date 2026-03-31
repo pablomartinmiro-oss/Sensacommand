@@ -22,6 +22,11 @@ You have access to these tools:
 12. create_social_post — Generate and create a social media post using AI
 13. query_social_posts — List/filter social media posts
 14. create_automation — Create a new automation from a plain-English description
+15. daily_priorities — Get today's prioritized action plan
+16. team_status — Get per-person or all-team goal status overview
+17. goal_insights — Analytical queries about goals (overdue by category, stuck goals, completion stats)
+18. snooze_goals — Bulk snooze goals by assignee, days overdue, or specific IDs
+19. weekly_summary — Generate a weekly performance summary
 
 When answering:
 - Always query the database first, never guess
@@ -220,6 +225,51 @@ export const AI_TOOLS: Anthropic.Tool[] = [
       },
       required: ['description'],
     },
+  },
+  {
+    name: 'daily_priorities',
+    description: 'Get today\'s prioritized action plan: goals due, overdue high-priority items, draft messages, revenue trend',
+    input_schema: { type: 'object' as const, properties: {} },
+  },
+  {
+    name: 'team_status',
+    description: 'Get per-person or all-team goal status overview',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        teamMember: { type: 'string', description: 'Team member name (optional, omit for all)' },
+      },
+    },
+  },
+  {
+    name: 'goal_insights',
+    description: 'Analytical queries about goals: overdue by category, stuck goals, completion rates by assignee',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        question: { type: 'string', description: 'The analytical question about goals' },
+      },
+      required: ['question'],
+    },
+  },
+  {
+    name: 'snooze_goals',
+    description: 'Bulk snooze goals by assignee name, days overdue threshold, or specific goal IDs',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        goalIds: { type: 'array', items: { type: 'string' }, description: 'Specific goal IDs to snooze' },
+        assignee: { type: 'string', description: 'Snooze all overdue goals for this assignee' },
+        daysOverdue: { type: 'number', description: 'Snooze goals overdue more than this many days' },
+        newDate: { type: 'string', description: 'New due date (ISO format)' },
+      },
+      required: ['newDate'],
+    },
+  },
+  {
+    name: 'weekly_summary',
+    description: 'Generate a weekly performance summary: goals completed, overdue changes, revenue, members',
+    input_schema: { type: 'object' as const, properties: {} },
   },
 ]
 

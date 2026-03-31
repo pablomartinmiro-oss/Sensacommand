@@ -71,18 +71,39 @@ export async function PUT(
     }
 
     const data = parsed.data
+
+    // Fetch old goal for activity logging
+    const oldGoal = await prisma.goal.findUnique({ where: { id } })
+    if (!oldGoal) return NextResponse.json({ error: 'Goal not found' }, { status: 404 })
+
     const updateData: Record<string, unknown> = {}
+    const activities: { action: string; fromValue?: string; toValue?: string }[] = []
 
     if (data.title !== undefined) updateData.title = data.title
     if (data.description !== undefined) updateData.description = data.description
     if (data.status !== undefined) {
+      if (data.status !== oldGoal.status) {
+        activities.push({ action: 'STATUS_CHANGED', fromValue: oldGoal.status, toValue: data.status })
+      }
       updateData.status = data.status
       if (data.status === 'DONE') updateData.completedDate = new Date()
       else updateData.completedDate = null
     }
-    if (data.priority !== undefined) updateData.priority = data.priority
+    if (data.priority !== undefined) {
+      if (data.priority !== oldGoal.priority) {
+        activities.push({ action: 'PRIORITY_CHANGED', fromValue: oldGoal.priority, toValue: data.priority })
+      }
+      updateData.priority = data.priority
+    }
     if (data.categories !== undefined) updateData.categories = data.categories
-    if (data.dueDate !== undefined) updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null
+    if (data.dueDate !== undefined) {
+      const newDue = data.dueDate ? new Date(data.dueDate).toISOString() : null
+      const oldDue = oldGoal.dueDate?.toISOString() || null
+      if (newDue !== oldDue) {
+        activities.push({ action: 'DUE_DATE_CHANGED', fromValue: oldDue || 'none', toValue: newDue || 'none' })
+      }
+      updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null
+    }
     if (data.notes !== undefined) updateData.notes = data.notes
 
     if (data.assigneeIds !== undefined) {
@@ -100,6 +121,13 @@ export async function PUT(
         _count: { select: { comments: true } },
       },
     })
+
+    // Log activities
+    if (activities.length > 0) {
+      await prisma.goalActivity.createMany({
+        data: activities.map(a => ({ goalId: id, action: a.action, fromValue: a.fromValue, toValue: a.toValue, performedBy: 'Pablo' })),
+      })
+    }
 
     return NextResponse.json({ data: goal })
   } catch (e) {

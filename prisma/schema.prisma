@@ -268,10 +268,25 @@ model Goal {
   assignees     TeamMember[]  @relation("GoalAssignees")
   comments      GoalComment[]
   linkedPlayers Player[]      @relation("GoalLinkedPlayers")
+  activities    GoalActivity[]
 
   @@index([status])
   @@index([priority])
   @@index([dueDate])
+}
+
+model GoalActivity {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  goalId      String
+  goal        Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  action      String
+  fromValue   String?
+  toValue     String?
+  performedBy String   @default("system")
+
+  @@index([goalId])
+  @@index([createdAt])
 }
 
 model GoalComment {

@@ -144,6 +144,9 @@ async function generateBriefing(): Promise<string> {
     lines.push(`⚠️ *Revenue behind pace* — consider running a promo`)
   }
 
+  lines.push(``)
+  lines.push(`🔗 Open Dashboard: https://sensacommand-production.up.railway.app`)
+
   return lines.join('\n')
 }
 

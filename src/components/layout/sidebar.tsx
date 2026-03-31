@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Bot,
   Workflow,
+  ClipboardCheck,
   Upload,
   Settings,
   ChevronLeft,
@@ -37,6 +38,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   MessageSquare,
   Bot,
   Workflow,
+  ClipboardCheck,
   Upload,
   Settings,
 }

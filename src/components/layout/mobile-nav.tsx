@@ -20,6 +20,7 @@ import {
   Share2,
   MessageSquare,
   Workflow,
+  ClipboardCheck,
   Upload,
   Settings,
 } from 'lucide-react'
@@ -41,6 +42,7 @@ const MORE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   Share2,
   MessageSquare,
   Workflow,
+  ClipboardCheck,
   Upload,
   Settings,
 }
