@@ -1,5 +1,5 @@
 {
-  "build": { "builder": "NIXPACKS" },
+  "build": { "builder": "DOCKERFILE" },
   "deploy": {
     "healthcheckPath": "/api/health",
     "restartPolicyType": "ON_FAILURE"
