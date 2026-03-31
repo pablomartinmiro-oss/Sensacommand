@@ -1,8 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs_20", "npm-9_x"]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = ["npm ci"]
 
 [phases.build]
-cmds = ["npm ci", "npx prisma generate", "npm run build"]
+cmds = ["npx prisma generate", "npm run build"]
 
 [start]
-cmd = "npx prisma migrate deploy && npm start -- -p ${PORT:-3000}"
+cmd = "npm start -- -p ${PORT:-3000}"
