@@ -15,19 +15,37 @@ export function CSVDropzone({ onFileLoaded }: CSVDropzoneProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const readFile = useCallback(
-    (f: File) => {
-      if (!f.name.endsWith('.csv') && f.type !== 'text/csv') {
-        alert('Please upload a .csv file')
+    async (f: File) => {
+      const isCSV = f.name.endsWith('.csv') || f.type === 'text/csv'
+      const isExcel = f.name.endsWith('.xlsx') || f.name.endsWith('.xls') || f.type.includes('spreadsheet')
+
+      if (!isCSV && !isExcel) {
+        alert('Please upload a .csv or .xlsx file')
         return
       }
 
       setFile({ name: f.name, size: f.size })
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const text = e.target?.result as string
-        if (text) onFileLoaded(text, f.name)
+
+      if (isExcel) {
+        // Parse xlsx on client side using SheetJS
+        const XLSX = (await import('xlsx')).default
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target?.result as ArrayBuffer)
+          const wb = XLSX.read(data, { type: 'array' })
+          const ws = wb.Sheets[wb.SheetNames[0]]
+          const csvText = XLSX.utils.sheet_to_csv(ws)
+          if (csvText) onFileLoaded(csvText, f.name)
+        }
+        reader.readAsArrayBuffer(f)
+      } else {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const text = e.target?.result as string
+          if (text) onFileLoaded(text, f.name)
+        }
+        reader.readAsText(f)
       }
-      reader.readAsText(f)
     },
     [onFileLoaded],
   )
@@ -84,7 +102,7 @@ export function CSVDropzone({ onFileLoaded }: CSVDropzoneProps) {
         <input
           ref={fileInputRef}
           type="file"
-          accept=".csv,text/csv"
+          accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
           onChange={handleInputChange}
           className="hidden"
         />
@@ -118,11 +136,11 @@ export function CSVDropzone({ onFileLoaded }: CSVDropzoneProps) {
             />
             <div>
               <p className="text-sm font-medium text-[#374151]">
-                Drop your CSV file here, or{' '}
+                Drop your CSV or Excel file here, or{' '}
                 <span className="text-amber-400 underline">browse</span>
               </p>
               <p className="text-xs text-[#9CA3AF] mt-1">
-                Accepts .csv files only
+                Accepts .csv, .xlsx, and .xls files
               </p>
             </div>
           </div>
