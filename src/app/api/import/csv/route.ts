@@ -1,273 +1,230 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { parseCSV } from '@/lib/csv-parser'
-import { z } from 'zod'
-
-const importSchema = z.object({
-  rows: z.array(z.object({
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    email: z.string().optional().nullable(),
-    phone: z.string().optional().nullable(),
-    date: z.string().optional().nullable(),
-    startTime: z.string().optional().nullable(),
-    endTime: z.string().optional().nullable(),
-    courtNumber: z.number().optional().nullable(),
-    amountPaid: z.number().optional().nullable(),
-    visitType: z.string().optional().nullable(),
-  })),
-})
 
 export async function POST(request: NextRequest) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const contentType = request.headers.get('content-type') || ''
-
-    // Handle FormData file upload: parse CSV and return preview
-    if (contentType.includes('multipart/form-data')) {
-      const formData = await request.formData()
-      const file = formData.get('file') as File | null
-
-      if (!file) {
-        return NextResponse.json(
-          { error: 'Validation error', message: 'No file uploaded' },
-          { status: 400 }
-        )
-      }
-
-      if (!file.name.endsWith('.csv')) {
-        return NextResponse.json(
-          { error: 'Validation error', message: 'File must be a CSV' },
-          { status: 400 }
-        )
-      }
-
-      const text = await file.text()
-      const parsed = parseCSV(text)
-
-      // Check for existing players by email
-      const emails = parsed.rows
-        .filter(r => r.email)
-        .map(r => r.email as string)
-
-      const existingPlayers = emails.length > 0
-        ? await prisma.player.findMany({
-            where: { email: { in: emails } },
-            select: { email: true, id: true, firstName: true, lastName: true },
-          })
-        : ([] as { email: string | null; id: string; firstName: string; lastName: string }[])
-
-      const existingEmails = new Set(existingPlayers.map(p => p.email))
-
-      const previewRows = parsed.rows.map(row => ({
-        date: row.date.toISOString(),
-        startTime: row.startTime.toISOString(),
-        endTime: row.endTime.toISOString(),
-        courtNumber: row.courtNumber,
-        firstName: row.firstName,
-        lastName: row.lastName,
-        email: row.email,
-        phone: row.phone,
-        amountPaid: row.amountPaid,
-        visitType: row.visitType,
-        errors: row.errors,
-        exists: row.email ? existingEmails.has(row.email) : false,
-      }))
-
-      return NextResponse.json({
-        data: {
-          rows: previewRows,
-          totalRows: parsed.totalRows,
-          validRows: parsed.validRows,
-          errors: parsed.errors,
-          existingPlayerCount: existingPlayers.length,
-        },
-      })
+    const body = await request.json()
+    const { mode, mapping, rows } = body as {
+      mode: 'bookings' | 'members'
+      mapping: Record<string, string>
+      rows: Record<string, string>[]
     }
 
-    // Handle JSON body: actually import the data
-    if (contentType.includes('application/json')) {
-      const body = await request.json()
+    if (!rows || !Array.isArray(rows) || rows.length === 0) {
+      return NextResponse.json({ error: 'No rows to import' }, { status: 400 })
+    }
 
-      // Support legacy format { csvText, action }
-      if (body.csvText) {
-        const parseResult = parseCSV(body.csvText)
+    const result = {
+      newPlayers: 0,
+      matchedPlayers: 0,
+      visits: 0,
+      payments: 0,
+      totalRevenue: 0,
+      errors: [] as string[],
+    }
 
-        if (body.action === 'preview') {
-          const emails = parseResult.rows.filter(r => r.email).map(r => r.email as string)
-          const existingPlayers = emails.length > 0
-            ? await prisma.player.findMany({
-                where: { email: { in: emails } },
-                select: { email: true, id: true, firstName: true, lastName: true },
-              })
-            : ([] as { email: string | null; id: string; firstName: string; lastName: string }[])
-          const existingEmails = new Set(existingPlayers.map(p => p.email))
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i]
+      const rowNum = i + 2 // +1 for header, +1 for 1-indexed
 
-          return NextResponse.json({
-            data: {
-              rows: parseResult.rows.map(row => ({
-                ...row,
-                date: row.date.toISOString(),
-                startTime: row.startTime.toISOString(),
-                endTime: row.endTime.toISOString(),
-                exists: row.email ? existingEmails.has(row.email) : false,
-              })),
-              errors: parseResult.errors,
-              totalRows: parseResult.totalRows,
-              validRows: parseResult.validRows,
-              existingPlayerCount: existingPlayers.length,
-            },
-          })
+      try {
+        // Extract player name
+        let firstName = '', lastName = ''
+        if (mapping.name && row[mapping.name]) {
+          const parts = row[mapping.name].trim().split(/\s+/)
+          firstName = parts[0] || ''
+          lastName = parts.slice(1).join(' ') || ''
+        }
+        if (mapping.firstName && row[mapping.firstName]) firstName = row[mapping.firstName].trim()
+        if (mapping.lastName && row[mapping.lastName]) lastName = row[mapping.lastName].trim()
+
+        if (!firstName && !lastName) {
+          result.errors.push(`Row ${rowNum}: No name found, skipped`)
+          continue
         }
 
-        // Import from parsed CSV text
-        return await performImport(parseResult.rows.filter(r => r.errors.length === 0).map(row => ({
-          firstName: row.firstName,
-          lastName: row.lastName,
-          email: row.email,
-          phone: row.phone,
-          date: row.date.toISOString(),
-          startTime: row.startTime.toISOString(),
-          endTime: row.endTime.toISOString(),
-          courtNumber: row.courtNumber,
-          amountPaid: row.amountPaid,
-          visitType: row.visitType,
-        })))
-      }
+        const email = mapping.email ? (row[mapping.email] || '').trim() || null : null
+        const phone = mapping.phone ? (row[mapping.phone] || '').trim() || null : null
 
-      // New format: { rows: [...] }
-      const parsed = importSchema.safeParse(body)
-      if (!parsed.success) {
-        return NextResponse.json(
-          { error: 'Validation error', message: parsed.error.issues.map(e => e.message).join(', ') },
-          { status: 400 }
-        )
-      }
+        // Find or create player — match by email first, then by full name, then phone
+        let player = null
+        if (email) {
+          player = await prisma.player.findFirst({ where: { email } })
+        }
+        if (!player && firstName && lastName) {
+          player = await prisma.player.findFirst({
+            where: { firstName: { equals: firstName, mode: 'insensitive' }, lastName: { equals: lastName, mode: 'insensitive' } },
+          })
+        }
+        if (!player && phone) {
+          const normalizedPhone = phone.replace(/\D/g, '').slice(-10)
+          if (normalizedPhone.length >= 7) {
+            player = await prisma.player.findFirst({ where: { phone: { contains: normalizedPhone } } })
+          }
+        }
 
-      return await performImport(parsed.data.rows)
+        if (player) {
+          result.matchedPlayers++
+        } else {
+          player = await prisma.player.create({
+            data: {
+              firstName: firstName || 'Unknown',
+              lastName: lastName || '',
+              email,
+              phone,
+              source: 'PLAYBYPOINT',
+              status: mode === 'members' ? 'CONVERTED' : 'NEW',
+              membershipType: 'NONE',
+            },
+          })
+          result.newPlayers++
+        }
+
+        if (mode === 'members') {
+          // Update membership info
+          const membershipType = mapping.membershipType ? row[mapping.membershipType] : ''
+          const startDate = mapping.startDate ? row[mapping.startDate] : ''
+          const monthlyRate = mapping.monthlyRate ? parseFloat(row[mapping.monthlyRate] || '0') : 0
+
+          let tier: 'NONE' | 'STANDARD' | 'UNLIMITED' = 'NONE'
+          const lower = (membershipType || '').toLowerCase()
+          if (lower.includes('unlimited') || lower.includes('all access')) tier = 'UNLIMITED'
+          else if (lower.includes('standard') || lower.includes('basic') || lower.includes('member')) tier = 'STANDARD'
+
+          if (tier !== 'NONE') {
+            await prisma.player.update({
+              where: { id: player.id },
+              data: {
+                membershipType: tier,
+                membershipStartDate: startDate ? new Date(startDate) : new Date(),
+                monthlyRate: monthlyRate || (tier === 'UNLIMITED' ? 350 : 200),
+                status: 'CONVERTED',
+              },
+            })
+          }
+        }
+
+        if (mode === 'bookings') {
+          const dateStr = mapping.date ? row[mapping.date] : ''
+          if (!dateStr) {
+            result.errors.push(`Row ${rowNum}: No date, skipped visit`)
+            continue
+          }
+
+          const date = new Date(dateStr)
+          if (isNaN(date.getTime())) {
+            result.errors.push(`Row ${rowNum}: Invalid date "${dateStr}", skipped`)
+            continue
+          }
+
+          const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+          const courtStr = mapping.court ? row[mapping.court] : ''
+          const courtMatch = courtStr?.match(/(\d+)/)
+          const courtNumber = courtMatch ? parseInt(courtMatch[1]) : 1
+
+          // Parse times
+          let startTime = date
+          let endTime = new Date(date.getTime() + 90 * 60000)
+
+          if (mapping.startTime && row[mapping.startTime]) {
+            const st = parseTime(row[mapping.startTime], dateOnly)
+            if (st) startTime = st
+          }
+          if (mapping.endTime && row[mapping.endTime]) {
+            const et = parseTime(row[mapping.endTime], dateOnly)
+            if (et) endTime = et
+          }
+
+          const amount = mapping.amount ? parseFloat(row[mapping.amount] || '0') || 0 : 0
+
+          // Dedup check: player + date + court + start time
+          const existing = await prisma.visit.findFirst({
+            where: { playerId: player.id, date: dateOnly, courtNumber },
+          })
+          if (existing) {
+            result.errors.push(`Row ${rowNum}: Duplicate visit (${firstName} ${lastName}, ${dateStr}, Court ${courtNumber}), skipped`)
+            continue
+          }
+
+          // Map booking type
+          const typeStr = mapping.type ? (row[mapping.type] || '').toLowerCase() : ''
+          let visitType: 'CASUAL' | 'MEMBER_SESSION' | 'LESSON' | 'TOURNAMENT' | 'PRIVATE_EVENT' = 'CASUAL'
+          if (typeStr.includes('lesson') || typeStr.includes('clinic')) visitType = 'LESSON'
+          else if (typeStr.includes('tournament')) visitType = 'TOURNAMENT'
+          else if (typeStr.includes('event') || typeStr.includes('private')) visitType = 'PRIVATE_EVENT'
+          else if (typeStr.includes('member')) visitType = 'MEMBER_SESSION'
+
+          await prisma.visit.create({
+            data: {
+              playerId: player.id,
+              courtNumber,
+              date: dateOnly,
+              startTime,
+              endTime,
+              type: visitType,
+              amountPaid: amount,
+              notes: 'Imported from CSV',
+            },
+          })
+          result.visits++
+
+          if (amount > 0) {
+            await prisma.payment.create({
+              data: {
+                playerId: player.id,
+                date: dateOnly,
+                amount,
+                type: visitType === 'LESSON' ? 'LESSON' : 'COURT_RENTAL',
+                method: 'PLAYBYPOINT',
+                description: `CSV import: ${fileName(row, mapping)}`,
+              },
+            })
+            result.payments++
+            result.totalRevenue += amount
+          }
+
+          // Update player status
+          if (player.status === 'NEW') {
+            await prisma.player.update({ where: { id: player.id }, data: { status: 'ACTIVE' } })
+          }
+        }
+      } catch (e) {
+        result.errors.push(`Row ${rowNum}: ${(e as Error).message}`)
+      }
     }
 
-    return NextResponse.json(
-      { error: 'Validation error', message: 'Invalid content type. Use multipart/form-data or application/json' },
-      { status: 400 }
-    )
+    return NextResponse.json({ data: result })
   } catch (e) {
-    return NextResponse.json(
-      { error: 'Internal server error', message: (e as Error).message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error', message: (e as Error).message }, { status: 500 })
   }
 }
 
-interface ImportRow {
-  firstName?: string
-  lastName?: string
-  email?: string | null
-  phone?: string | null
-  date?: string | null
-  startTime?: string | null
-  endTime?: string | null
-  courtNumber?: number | null
-  amountPaid?: number | null
-  visitType?: string | null
-}
+function parseTime(timeStr: string, baseDate: Date): Date | null {
+  const trimmed = timeStr.trim()
 
-async function performImport(rows: ImportRow[]) {
-  let playersCreated = 0
-  let playersUpdated = 0
-  let visitsCreated = 0
-  let paymentsCreated = 0
-  const errors: { row: number; message: string }[] = []
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i]
-
-    try {
-      let player = row.email
-        ? await prisma.player.findUnique({ where: { email: row.email } })
-        : null
-
-      if (!player && row.firstName) {
-        player = await prisma.player.findFirst({
-          where: {
-            firstName: { equals: row.firstName, mode: 'insensitive' },
-            lastName: { equals: row.lastName || 'Player', mode: 'insensitive' },
-          },
-        })
-      }
-
-      if (!player) {
-        player = await prisma.player.create({
-          data: {
-            firstName: row.firstName || 'Unknown',
-            lastName: row.lastName || 'Player',
-            email: row.email || undefined,
-            phone: row.phone || undefined,
-            source: 'PLAYBYPOINT',
-            status: 'ACTIVE',
-          },
-        })
-        playersCreated++
-      } else if (row.phone && !player.phone) {
-        await prisma.player.update({
-          where: { id: player.id },
-          data: { phone: row.phone },
-        })
-        playersUpdated++
-      }
-
-      if (row.date) {
-        const visitDate = new Date(row.date)
-        const startTime = row.startTime ? new Date(row.startTime) : visitDate
-        const endTime = row.endTime ? new Date(row.endTime) : new Date(startTime.getTime() + 90 * 60000)
-        const validTypes = ['CASUAL', 'MEMBER_SESSION', 'LESSON', 'TOURNAMENT', 'PRIVATE_EVENT']
-        const visitType = validTypes.includes(row.visitType || '')
-          ? (row.visitType as 'CASUAL' | 'MEMBER_SESSION' | 'LESSON' | 'TOURNAMENT' | 'PRIVATE_EVENT')
-          : 'CASUAL'
-
-        await prisma.visit.create({
-          data: {
-            playerId: player.id,
-            courtNumber: Math.min(Math.max(row.courtNumber || 1, 1), 6),
-            date: visitDate,
-            startTime,
-            endTime,
-            type: visitType,
-            amountPaid: row.amountPaid || 0,
-          },
-        })
-        visitsCreated++
-      }
-
-      if (row.amountPaid && Number(row.amountPaid) > 0) {
-        await prisma.payment.create({
-          data: {
-            playerId: player.id,
-            date: row.date ? new Date(row.date) : new Date(),
-            amount: Number(row.amountPaid),
-            type: 'COURT_RENTAL',
-            method: 'CARD',
-            description: `Imported: Court ${row.courtNumber || 1}`,
-          },
-        })
-        paymentsCreated++
-      }
-    } catch (e) {
-      errors.push({ row: i + 1, message: (e as Error).message })
-    }
+  // Try "HH:MM" or "H:MM AM/PM"
+  const match12 = trimmed.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i)
+  if (match12) {
+    let hours = parseInt(match12[1])
+    const minutes = parseInt(match12[2])
+    const meridian = match12[3]?.toUpperCase()
+    if (meridian === 'PM' && hours < 12) hours += 12
+    if (meridian === 'AM' && hours === 12) hours = 0
+    return new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), hours, minutes)
   }
 
-  return NextResponse.json({
-    data: {
-      playersCreated,
-      playersUpdated,
-      visitsCreated,
-      paymentsCreated,
-      errors,
-      totalProcessed: rows.length,
-    },
-  })
+  // Try ISO datetime
+  const d = new Date(trimmed)
+  if (!isNaN(d.getTime())) return d
+
+  return null
+}
+
+function fileName(row: Record<string, string>, mapping: Record<string, string>): string {
+  const name = mapping.name ? row[mapping.name] : `${row[mapping.firstName] || ''} ${row[mapping.lastName] || ''}`
+  return name?.trim() || 'unknown'
 }

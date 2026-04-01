@@ -19,6 +19,7 @@ import {
   Send,
   RotateCcw,
   Wifi,
+  Trash2,
 } from 'lucide-react'
 
 interface Settings {
@@ -80,6 +81,7 @@ export function SettingsForm() {
   const [triggeringBriefing, setTriggeringBriefing] = useState(false)
   const [exporting, setExporting] = useState(false)
   const [resetting, setResetting] = useState(false)
+  const [clearing, setClearing] = useState(false)
 
   async function fetchSettings() {
     try {
@@ -200,6 +202,24 @@ export function SettingsForm() {
     setResetting(true)
     toast('info', 'Reset functionality requires running: npx prisma db seed')
     setResetting(false)
+  }
+
+  async function handleClearPlayerData() {
+    if (!confirm('This will delete all players, visits, payments, and revenue data. Goals and team members will be kept. This cannot be undone.')) return
+    setClearing(true)
+    try {
+      const res = await fetch('/api/settings/clear-player-data', { method: 'POST' })
+      if (res.ok) {
+        const json = await res.json()
+        const d = json.data.deleted
+        toast('success', `Cleared: ${d.players} players, ${d.visits} visits, ${d.payments} payments, ${d.dailyRevenue} revenue records`)
+      } else {
+        toast('error', 'Failed to clear data')
+      }
+    } catch {
+      toast('error', 'Failed to clear data')
+    }
+    setClearing(false)
   }
 
   function togglePeakHour(hour: number) {
@@ -434,9 +454,13 @@ export function SettingsForm() {
             <RotateCcw className="w-4 h-4" />
             Reset to Seed Data
           </Button>
+          <Button variant="danger" onClick={handleClearPlayerData} loading={clearing}>
+            <Trash2 className="w-4 h-4" />
+            Clear Player Data
+          </Button>
         </div>
         <p className="text-xs text-[#9CA3AF] mt-3">
-          Export downloads all data as JSON. Reset requires re-running the database seed command.
+          Export downloads all data as JSON. Clear Player Data removes all players, visits, payments, and revenue but keeps goals, team, and automations.
         </p>
       </SectionCard>
     </div>
