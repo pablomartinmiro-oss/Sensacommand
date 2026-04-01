@@ -3,182 +3,221 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Sun, Zap, CheckCircle, ChevronDown, ChevronUp, RefreshCw, Bot, Clock, FileText, Target, TrendingDown } from 'lucide-react'
+import { DollarSign, Users, BarChart3, ArrowUp, ArrowDown, Lightbulb, CheckCircle, Check } from 'lucide-react'
+import { GoalSlideOver } from '@/components/goals/goal-slide-over'
 
-interface AttentionItem {
-  id: string
-  type: string
-  priority: string
-  title: string
-  description: string
-  data: Record<string, unknown>
+interface HealthData {
+  mtdRevenue: number; wowRevenue: number | null; activeMembers: number
+  netMembersMonth: number; visitsWeek: number; wowVisits: number | null
 }
+
+interface PabloGoal { id: string; title: string; priority: string; daysOverdue?: number; status: string }
 
 interface BriefingData {
-  narrative: { pulse: string; attention: string[]; handled: string }
-  attentionItems: AttentionItem[]
-  data: {
-    yesterdayRevenue: number
-    mtdRevenue: number
-    activeMembers: number
-    overdueGoals: number
-    draftMessages: number
-  }
-  generatedAt: string
+  health: HealthData
+  pabloGoals: { dueToday: PabloGoal[]; topOverdue: PabloGoal[]; totalOverdue: number }
+  aiInsight: { insight: string; actionLabel: string; actionUrl: string }
+  teamPulse: { name: string; total: number; inProgress: number; overdue: number; needsCheckin: boolean }[]
+  handled: { count: number; summary: string } | null
 }
 
-const ITEM_ICONS: Record<string, typeof Target> = {
-  GOAL_DUE: Clock,
-  DRAFT_MESSAGES: FileText,
-  OVERDUE_GOALS: Target,
-  REVENUE_ALERT: TrendingDown,
-}
+const SNOOZE_DAYS = [{ label: '1d', days: 1 }, { label: '3d', days: 3 }, { label: '1w', days: 7 }]
 
 export function Briefing() {
   const [data, setData] = useState<BriefingData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [collapsed, setCollapsed] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
+  const [slideOverGoalId, setSlideOverGoalId] = useState<string | null>(null)
   const router = useRouter()
 
-  const fetchBriefing = async (force = false) => {
-    if (force) setRefreshing(true)
+  const fetchBriefing = async () => {
     try {
-      const url = force ? '/api/dashboard/briefing?refresh=1' : '/api/dashboard/briefing'
-      const res = await fetch(url)
+      const res = await fetch('/api/dashboard/briefing')
       const json = await res.json()
       setData(json.data)
     } catch { /* ignore */ }
     setLoading(false)
-    setRefreshing(false)
   }
 
   useEffect(() => { fetchBriefing() }, [])
 
-  const handleGoalAction = async (goalId: string, action: 'done' | 'snooze') => {
-    if (action === 'done') {
-      await fetch(`/api/goals/${goalId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'DONE' }) })
-    } else {
-      await fetch(`/api/goals/${goalId}/snooze`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ days: 3 }) })
-    }
-    fetchBriefing(true)
+  const markDone = async (goalId: string) => {
+    await fetch(`/api/goals/${goalId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'DONE' }) })
+    fetchBriefing()
   }
 
-  const today = new Date()
-  const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 17 ? 'Good afternoon' : 'Good evening'
-  const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  const snooze = async (goalId: string, days: number) => {
+    await fetch(`/api/goals/${goalId}/snooze`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ days }) })
+    fetchBriefing()
+  }
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-[#E8E4DD] bg-gradient-to-r from-white to-amber-50/50 p-6 shadow-sm">
-        <div className="animate-pulse space-y-4">
-          <div className="h-6 w-48 bg-[#F0EFE9] rounded" />
-          <div className="h-4 w-full bg-[#F0EFE9] rounded" />
-          <div className="h-4 w-3/4 bg-[#F0EFE9] rounded" />
-          <div className="h-20 bg-[#F0EFE9] rounded" />
+      <div className="space-y-4">
+        <div className="grid grid-cols-3 gap-3">
+          {[1, 2, 3].map(i => <div key={i} className="h-16 bg-[#F0EFE9] rounded-lg animate-pulse" />)}
         </div>
+        <div className="h-24 bg-[#F0EFE9] rounded-lg animate-pulse" />
       </div>
     )
   }
 
   if (!data) return null
 
+  const { health, pabloGoals, aiInsight, teamPulse, handled } = data
+  const totalItems = pabloGoals.dueToday.length + Math.min(pabloGoals.topOverdue.length, 3)
+  const hasGoals = totalItems > 0
+  const teamIssues = teamPulse.filter(m => m.needsCheckin)
+  const showInsight = aiInsight.insight && aiInsight.insight !== 'All quiet. No issues detected.'
+
   return (
-    <div className="rounded-xl border border-[#E8E4DD] bg-gradient-to-r from-white to-amber-50/30 shadow-sm overflow-hidden">
-      <div className="border-l-4 border-amber-400 p-5 sm:p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Sun className="w-5 h-5 text-amber-500" />
-            <h2 className="text-lg font-heading font-semibold text-[#1A1A2E]">
-              {greeting}, Pablo
-            </h2>
+    <div className="space-y-4">
+      {/* SECTION 1: Health Bar */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <button onClick={() => router.push('/revenue')} className="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow text-left">
+          <DollarSign className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          <div>
+            <p className="text-lg font-semibold text-slate-900">${health.mtdRevenue.toLocaleString()} <span className="text-xs font-normal text-[#9CA3AF]">MTD</span></p>
+            {health.wowRevenue !== null && (
+              <p className={cn('text-sm flex items-center gap-0.5', health.wowRevenue >= 0 ? 'text-emerald-600' : 'text-red-500')}>
+                {health.wowRevenue >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                {Math.abs(health.wowRevenue)}% vs last wk
+              </p>
+            )}
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[#9CA3AF]">{dateStr}</span>
-            <button onClick={() => setCollapsed(!collapsed)} className="p-1 rounded hover:bg-[#F0EFE9] text-[#9CA3AF]">
-              {collapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-            </button>
+        </button>
+
+        <button onClick={() => router.push('/members')} className="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow text-left">
+          <Users className="w-4 h-4 text-blue-500 flex-shrink-0" />
+          <div>
+            <p className="text-lg font-semibold text-slate-900">{health.activeMembers} <span className="text-xs font-normal text-[#9CA3AF]">Members</span></p>
+            <p className={cn('text-sm', health.netMembersMonth >= 0 ? 'text-emerald-600' : 'text-red-500')}>
+              {health.netMembersMonth >= 0 ? '+' : ''}{health.netMembersMonth} this month
+            </p>
           </div>
+        </button>
+
+        <button onClick={() => router.push('/courts')} className="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow text-left">
+          <BarChart3 className="w-4 h-4 text-purple-500 flex-shrink-0" />
+          <div>
+            <p className="text-lg font-semibold text-slate-900">{health.visitsWeek} <span className="text-xs font-normal text-[#9CA3AF]">Visits/wk</span></p>
+            {health.wowVisits !== null && (
+              <p className={cn('text-sm flex items-center gap-0.5', health.wowVisits >= 0 ? 'text-emerald-600' : 'text-red-500')}>
+                {health.wowVisits >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                {Math.abs(health.wowVisits)}% vs last wk
+              </p>
+            )}
+          </div>
+        </button>
+      </div>
+
+      {/* SECTION 2: Your Day */}
+      <div className="bg-white border border-slate-200 rounded-lg">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+          <h3 className="text-sm font-semibold text-slate-900">Your Day</h3>
+          {hasGoals && <span className="text-xs text-[#9CA3AF]">{totalItems} item{totalItems !== 1 ? 's' : ''}</span>}
         </div>
 
-        {!collapsed && (
-          <div className="space-y-5">
-            {/* The Pulse */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] mb-2">The Pulse</p>
-              <p className="text-sm text-[#374151] leading-relaxed">{data.narrative.pulse}</p>
+        <div className="px-4 py-2">
+          {!hasGoals ? (
+            <div className="flex items-center gap-2 py-3 text-emerald-600">
+              <Check className="w-4 h-4" />
+              <span className="text-sm font-medium">You&apos;re clear for today</span>
             </div>
+          ) : (
+            <div className="divide-y divide-slate-50">
+              {/* Due Today */}
+              {pabloGoals.dueToday.map(g => (
+                <GoalRow key={g.id} goal={g} label="Due today" onDone={markDone} onSnooze={snooze} onOpen={setSlideOverGoalId} />
+              ))}
 
-            <div className="border-t border-[#E8E4DD]" />
+              {/* Top Overdue */}
+              {pabloGoals.topOverdue.map(g => (
+                <GoalRow key={g.id} goal={g} label={`${g.daysOverdue}d overdue`} isOverdue onDone={markDone} onSnooze={snooze} onOpen={setSlideOverGoalId} />
+              ))}
+            </div>
+          )}
 
-            {/* Needs Your Attention */}
-            {data.attentionItems.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] mb-3 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-amber-500" /> Needs Your Attention
-                </p>
-                <div className="space-y-2">
-                  {data.attentionItems.map(item => {
-                    const Icon = ITEM_ICONS[item.type] || Target
-                    return (
-                      <div key={item.id} className="flex items-start gap-3 bg-white border border-[#E8E4DD] rounded-lg p-3">
-                        <Icon className={cn('w-4 h-4 mt-0.5 flex-shrink-0', item.priority === 'HIGH' ? 'text-red-500' : 'text-amber-500')} />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-[#1A1A2E]">{item.title}</p>
-                          <p className="text-xs text-[#6B7280]">{item.description}</p>
-                          <div className="flex flex-wrap gap-1.5 mt-2">
-                            {item.type === 'GOAL_DUE' && (
-                              <>
-                                <button onClick={() => handleGoalAction(item.data.goalId as string, 'done')} className="text-[10px] px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100">Mark Done</button>
-                                <button onClick={() => handleGoalAction(item.data.goalId as string, 'snooze')} className="text-[10px] px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">Snooze 3d</button>
-                                <button onClick={() => router.push('/goals')} className="text-[10px] px-2 py-1 rounded-full bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100">Open Goal</button>
-                              </>
-                            )}
-                            {item.type === 'DRAFT_MESSAGES' && (
-                              <button onClick={() => router.push('/messages')} className="text-[10px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100">Review Messages →</button>
-                            )}
-                            {item.type === 'OVERDUE_GOALS' && (
-                              <button onClick={() => router.push('/goals')} className="text-[10px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100">View Overdue Goals →</button>
-                            )}
-                            {item.type === 'REVENUE_ALERT' && (
-                              <button onClick={() => router.push('/revenue')} className="text-[10px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100">View Revenue Details →</button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
+          {pabloGoals.totalOverdue > 3 && (
+            <button onClick={() => router.push('/goals')} className="text-xs text-amber-600 hover:text-amber-700 py-2 block">
+              You have {pabloGoals.totalOverdue - 3} more overdue →
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* SECTION 3: AI Insight */}
+      {showInsight && (
+        <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+          <Lightbulb className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm text-slate-700">{aiInsight.insight}</p>
+            {aiInsight.actionLabel && aiInsight.actionUrl && (
+              <button onClick={() => router.push(aiInsight.actionUrl)} className="mt-2 text-xs px-3 py-1 rounded-full bg-amber-500 text-white font-medium hover:bg-amber-600">
+                {aiInsight.actionLabel} →
+              </button>
             )}
-
-            <div className="border-t border-[#E8E4DD]" />
-
-            {/* Handled For You */}
-            <div className="bg-emerald-50/50 rounded-lg p-3 border border-emerald-100">
-              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-1.5 flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5" /> Handled for You
-              </p>
-              <p className="text-sm text-emerald-800">{data.narrative.handled}</p>
-            </div>
-
-            {/* Footer */}
-            <div className="flex items-center justify-between pt-1">
-              <button onClick={() => fetchBriefing(true)} disabled={refreshing} className="flex items-center gap-1.5 text-xs text-[#9CA3AF] hover:text-[#1A1A2E] transition-colors">
-                <RefreshCw className={cn('w-3 h-3', refreshing && 'animate-spin')} />
-                {refreshing ? 'Refreshing...' : 'Refresh Briefing'}
-              </button>
-              <button onClick={() => router.push('/ai')} className="flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-700 transition-colors">
-                <Bot className="w-3 h-3" /> Ask AI for More Detail →
-              </button>
-            </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {collapsed && (
-          <p className="text-sm text-[#374151]">{data.narrative.pulse}</p>
-        )}
+      {/* SECTION 4: Team Pulse */}
+      {teamPulse.length > 0 && (
+        <button onClick={() => router.push('/team')} className="text-sm text-[#6B7280] hover:text-[#1A1A2E] transition-colors text-left">
+          <span className="font-medium text-[#374151]">Team:</span>{' '}
+          {teamPulse.slice(0, 4).map(m => (
+            <span key={m.name}>
+              {m.name} {m.inProgress} in progress
+              {m.needsCheckin && <span className="text-amber-600"> ({m.overdue} overdue)</span>}
+              {' · '}
+            </span>
+          ))}
+          {teamIssues.length > 0 && (
+            <span className="text-amber-600">{teamIssues[0].name} may need a check-in</span>
+          )}
+        </button>
+      )}
+
+      {/* SECTION 5: Handled */}
+      {handled && handled.count > 0 && (
+        <div className="flex items-center gap-2 text-sm">
+          <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+          <span className="text-[#6B7280]">{handled.summary}</span>
+          <button onClick={() => router.push('/automations')} className="text-amber-600 text-xs hover:text-amber-700 ml-1">View →</button>
+        </div>
+      )}
+
+      {/* Goal Slide-Over */}
+      <GoalSlideOver goalId={slideOverGoalId} open={!!slideOverGoalId} onClose={() => setSlideOverGoalId(null)} onUpdated={fetchBriefing} />
+    </div>
+  )
+}
+
+function GoalRow({ goal, label, isOverdue, onDone, onSnooze, onOpen }: {
+  goal: PabloGoal; label: string; isOverdue?: boolean
+  onDone: (id: string) => void; onSnooze: (id: string, days: number) => void; onOpen: (id: string) => void
+}) {
+  const [showSnooze, setShowSnooze] = useState(false)
+  const borderColor = goal.priority === 'HIGH' ? 'border-l-amber-500' : goal.priority === 'MEDIUM' ? 'border-l-blue-400' : 'border-l-slate-300'
+
+  return (
+    <div className={cn('group flex items-center gap-2 py-2 border-l-[3px] pl-3 -ml-4 hover:bg-amber-50/50 transition-colors', borderColor)}>
+      <div className="flex-1 min-w-0">
+        <button onClick={() => onOpen(goal.id)} className="text-sm text-slate-900 hover:text-amber-600 truncate block text-left w-full">{goal.title}</button>
+        <span className={cn('text-[10px]', isOverdue ? 'text-red-500' : 'text-[#9CA3AF]')}>{label}</span>
+      </div>
+      <div className="flex items-center gap-1 flex-shrink-0 opacity-60 group-hover:opacity-100 sm:opacity-100 transition-opacity">
+        <button onClick={() => onDone(goal.id)} className="h-6 px-2 text-[10px] rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100">Done</button>
+        <div className="relative">
+          <button onClick={() => setShowSnooze(!showSnooze)} className="h-6 px-2 text-[10px] rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">Snooze</button>
+          {showSnooze && (
+            <div className="absolute right-0 top-full mt-1 bg-white border border-[#E8E4DD] rounded shadow-lg py-1 z-10 w-20">
+              {SNOOZE_DAYS.map(o => (
+                <button key={o.days} onClick={() => { onSnooze(goal.id, o.days); setShowSnooze(false) }} className="w-full text-left px-2 py-1 text-[10px] text-[#374151] hover:bg-[#F0EFE9]">{o.label}</button>
+              ))}
+            </div>
+          )}
+        </div>
+        <button onClick={() => onOpen(goal.id)} className="h-6 px-1.5 text-[10px] rounded border border-slate-200 text-slate-500 hover:bg-slate-50">→</button>
       </div>
     </div>
   )
