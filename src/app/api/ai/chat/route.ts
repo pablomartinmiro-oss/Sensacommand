@@ -57,6 +57,8 @@ interface ToolInput {
   goalIds?: string[]
   daysOverdue?: number
   newDate?: string
+  // Webhook tools
+  eventType?: string
 }
 
 // Types for Prisma query results used in callbacks
@@ -737,6 +739,27 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
           newMembers,
           churned,
           newPlayers,
+        })
+      }
+
+      case 'query_webhook_events': {
+        const where: Record<string, unknown> = { source: 'playbypoint' }
+        if (input.eventType) where.event = input.eventType
+        if (input.status) where.status = input.status
+
+        const events = await prisma.webhookEvent.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          take: input.limit || 10,
+          select: { id: true, event: true, status: true, createdAt: true, playerId: true, error: true },
+        })
+
+        return JSON.stringify({
+          count: events.length,
+          events: events.map(e => ({
+            id: e.id, event: e.event, status: e.status,
+            time: e.createdAt, playerId: e.playerId, error: e.error,
+          })),
         })
       }
 

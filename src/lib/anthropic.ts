@@ -27,6 +27,7 @@ You have access to these tools:
 17. goal_insights — Analytical queries about goals (overdue by category, stuck goals, completion stats)
 18. snooze_goals — Bulk snooze goals by assignee, days overdue, or specific IDs
 19. weekly_summary — Generate a weekly performance summary
+20. query_webhook_events — View recent PlayByPoint webhook events
 
 When answering:
 - Always query the database first, never guess
@@ -270,6 +271,18 @@ export const AI_TOOLS: Anthropic.Tool[] = [
     name: 'weekly_summary',
     description: 'Generate a weekly performance summary: goals completed, overdue changes, revenue, members',
     input_schema: { type: 'object' as const, properties: {} },
+  },
+  {
+    name: 'query_webhook_events',
+    description: 'View recent PlayByPoint webhook events — signups, reservations, payments, membership changes',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        eventType: { type: 'string', description: 'Filter by event type (e.g., user_signup, reservation_created)' },
+        status: { type: 'string', enum: ['processed', 'failed', 'pending', 'duplicate'] },
+        limit: { type: 'number', description: 'Max results (default 10)' },
+      },
+    },
   },
 ]
 

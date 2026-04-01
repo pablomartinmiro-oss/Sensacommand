@@ -386,3 +386,26 @@ model SocialCampaign {
   status      String   @default("ACTIVE")
   posts       SocialPost[]
 }
+
+// ---------------------------------------------------------------------------
+// Webhooks
+// ---------------------------------------------------------------------------
+
+model WebhookEvent {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  webhookId   String    @unique
+  event       String
+  source      String    @default("playbypoint")
+  payload     Json
+  status      String    @default("pending")
+  error       String?   @db.Text
+  processedAt DateTime?
+  playerId    String?
+  visitId     String?
+  paymentId   String?
+
+  @@index([event])
+  @@index([status])
+  @@index([createdAt])
+}
