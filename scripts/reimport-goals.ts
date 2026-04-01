@@ -11,13 +11,13 @@ const prisma = new PrismaClient({ adapter })
 const NAME_ALIASES: Record<string, string> = {
   'pablo martin': 'Pablo Martin',
   'aditya khilnani': 'Aditya Khilnani',
-  'marcus y': 'Marcus Y',
+  'marcus y': 'Maria Sanz',
   'arianna gil': 'Arianna Gil',
   'arianna gil olortegui': 'Arianna Gil',
   'maria sanz': 'Maria Sanz',
-  'scott mitchell': 'Scott Mitchell',
-  'sebastián arce': 'Sebastián Arce',
-  'sebastian arce': 'Sebastián Arce',
+  'scott mitchell': 'Pablo Martin',
+  'sebastián arce': 'Pablo Martin',
+  'sebastian arce': 'Pablo Martin',
   'tripp hostetter': 'Tripp Hostetter',
 }
 

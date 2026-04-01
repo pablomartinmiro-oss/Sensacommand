@@ -15,11 +15,8 @@ const prisma = new PrismaClient({ adapter })
 const TEAM_MEMBERS = [
   { firstName: 'Pablo', lastName: 'Martin', email: 'pablo@sensapadel.com', role: 'GM' as const },
   { firstName: 'Aditya', lastName: 'Khilnani', email: 'aditya@sensapadel.com', role: 'OPERATIONS' as const },
-  { firstName: 'Marcus', lastName: 'Y', email: 'marcus@sensapadel.com', role: 'PRO_SHOP' as const },
   { firstName: 'Arianna', lastName: 'Gil', email: 'arianna@sensapadel.com', role: 'MARKETING' as const },
   { firstName: 'Maria', lastName: 'Sanz', email: 'maria@sensapadel.com', role: 'OPERATIONS' as const },
-  { firstName: 'Scott', lastName: 'Mitchell', email: 'scott@sensapadel.com', role: 'FINANCE' as const },
-  { firstName: 'Sebastián', lastName: 'Arce', email: 'sebastian@sensapadel.com', role: 'COACH' as const },
   { firstName: 'Tripp', lastName: 'Hostetter', email: 'tripp@sensapadel.com', role: 'FINANCE' as const },
 ]
 
@@ -30,13 +27,13 @@ const TEAM_MEMBERS = [
 const NAME_ALIASES: Record<string, string> = {
   'pablo martin': 'Pablo Martin',
   'aditya khilnani': 'Aditya Khilnani',
-  'marcus y': 'Marcus Y',
+  'marcus y': 'Maria Sanz',
   'arianna gil': 'Arianna Gil',
   'arianna gil olortegui': 'Arianna Gil',
   'maria sanz': 'Maria Sanz',
-  'scott mitchell': 'Scott Mitchell',
-  'sebastián arce': 'Sebastián Arce',
-  'sebastian arce': 'Sebastián Arce',
+  'scott mitchell': 'Pablo Martin',
+  'sebastián arce': 'Pablo Martin',
+  'sebastian arce': 'Pablo Martin',
   'tripp hostetter': 'Tripp Hostetter',
 }
 
