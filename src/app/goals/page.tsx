@@ -7,6 +7,8 @@ import { KanbanBoard } from '@/components/goals/kanban-board'
 import { GoalsTable } from '@/components/goals/goals-table'
 import { GoalDetail } from '@/components/goals/goal-detail'
 import { NewGoalModal } from '@/components/goals/new-goal-modal'
+import { useToast } from '@/components/ui/toast'
+import { GOAL_STATUS_LABELS } from '@/lib/constants'
 import { Plus } from 'lucide-react'
 import type { GoalListItem } from '@/types'
 
@@ -17,6 +19,7 @@ interface TeamMemberOption {
 }
 
 export default function GoalsPage() {
+  const { toast } = useToast()
   const [goals, setGoals] = useState<GoalListItem[]>([])
   const [teamMembers, setTeamMembers] = useState<TeamMemberOption[]>([])
   const [loading, setLoading] = useState(true)
@@ -81,6 +84,7 @@ export default function GoalsPage() {
   const handleStatusChange = async (goalId: string, newStatus: string) => {
     // Optimistic update
     setGoals(prev => prev.map(g => g.id === goalId ? { ...g, status: newStatus as GoalListItem['status'] } : g))
+    toast('success', `Goal moved to ${GOAL_STATUS_LABELS[newStatus] || newStatus}`)
     try {
       await fetch(`/api/goals/${goalId}`, {
         method: 'PUT',
@@ -89,6 +93,7 @@ export default function GoalsPage() {
       })
     } catch {
       fetchGoals() // rollback
+      toast('error', 'Failed to update goal')
     }
   }
 
