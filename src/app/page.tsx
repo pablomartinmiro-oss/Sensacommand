@@ -7,6 +7,7 @@ import { ActivityFeed } from '@/components/dashboard/activity-feed'
 import { ActionItems } from '@/components/dashboard/action-items'
 import { GoalsSummary } from '@/components/dashboard/goals-summary'
 import { SocialSummary } from '@/components/dashboard/social-summary'
+import { LeaveSummary } from '@/components/dashboard/leave-summary'
 
 export default function DashboardPage() {
   return (
@@ -16,6 +17,9 @@ export default function DashboardPage() {
       <main className="flex-1 overflow-y-auto px-4 py-6 lg:px-6 space-y-6">
         {/* The Briefing — AI-generated morning summary */}
         <Briefing />
+
+        {/* Leave indicator (only shows if relevant) */}
+        <LeaveSummary />
 
         {/* Stat Cards */}
         <StatCards />

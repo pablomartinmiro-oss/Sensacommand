@@ -244,8 +244,10 @@ model TeamMember {
   role      TeamMemberRole
   isActive  Boolean        @default(true)
 
-  assignedGoals Goal[]       @relation("GoalAssignees")
-  comments      GoalComment[]
+  assignedGoals   Goal[]           @relation("GoalAssignees")
+  comments        GoalComment[]
+  leaveAllowances LeaveAllowance[]
+  leaveRequests   LeaveRequest[]
 
   @@index([role])
 }
@@ -408,4 +410,42 @@ model WebhookEvent {
   @@index([event])
   @@index([status])
   @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Leave / PTO Tracker
+// ---------------------------------------------------------------------------
+
+model LeaveAllowance {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  teamMemberId String
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id])
+  year         Int
+  totalDays    Int        @default(15)
+  usedDays     Int        @default(0)
+
+  @@unique([teamMemberId, year])
+}
+
+model LeaveRequest {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  teamMemberId String
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id])
+  startDate    DateTime
+  endDate      DateTime
+  days         Int
+  type         String    @default("PTO")
+  reason       String?
+  status       String    @default("PENDING")
+  approvedBy   String?
+  approvedAt   DateTime?
+  notes        String?   @db.Text
+
+  @@index([teamMemberId])
+  @@index([status])
+  @@index([startDate])
 }

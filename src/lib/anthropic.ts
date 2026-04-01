@@ -28,6 +28,8 @@ You have access to these tools:
 18. snooze_goals — Bulk snooze goals by assignee, days overdue, or specific IDs
 19. weekly_summary — Generate a weekly performance summary
 20. query_webhook_events — View recent PlayByPoint webhook events
+21. query_leave — Query leave/PTO requests and allowances
+22. approve_leave — Approve a pending leave request
 
 When answering:
 - Always query the database first, never guess
@@ -271,6 +273,30 @@ export const AI_TOOLS: Anthropic.Tool[] = [
     name: 'weekly_summary',
     description: 'Generate a weekly performance summary: goals completed, overdue changes, revenue, members',
     input_schema: { type: 'object' as const, properties: {} },
+  },
+  {
+    name: 'query_leave',
+    description: 'Query leave/PTO requests, allowances, and who is off',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        teamMember: { type: 'string', description: 'Team member name to filter by' },
+        status: { type: 'string', enum: ['PENDING', 'APPROVED', 'DENIED', 'CANCELLED'] },
+        startDate: { type: 'string', description: 'Filter requests starting after this date' },
+        endDate: { type: 'string', description: 'Filter requests ending before this date' },
+      },
+    },
+  },
+  {
+    name: 'approve_leave',
+    description: 'Approve a pending leave request',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        requestId: { type: 'string', description: 'Leave request ID to approve' },
+      },
+      required: ['requestId'],
+    },
   },
   {
     name: 'query_webhook_events',

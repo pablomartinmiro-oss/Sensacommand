@@ -59,6 +59,8 @@ interface ToolInput {
   newDate?: string
   // Webhook tools
   eventType?: string
+  // Leave tools
+  requestId?: string
 }
 
 // Types for Prisma query results used in callbacks
@@ -740,6 +742,53 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
           churned,
           newPlayers,
         })
+      }
+
+      case 'query_leave': {
+        const where: Record<string, unknown> = {}
+        if (input.status) where.status = input.status
+        if (input.teamMember) {
+          where.teamMember = { OR: [{ firstName: { contains: input.teamMember, mode: 'insensitive' } }, { lastName: { contains: input.teamMember, mode: 'insensitive' } }] }
+        }
+        if (input.startDate) where.startDate = { gte: new Date(input.startDate) }
+        if (input.endDate) where.endDate = { lte: new Date(input.endDate) }
+
+        const [requests, allowances] = await Promise.all([
+          prisma.leaveRequest.findMany({
+            where, take: 20, orderBy: { startDate: 'desc' },
+            include: { teamMember: { select: { firstName: true, lastName: true } } },
+          }),
+          prisma.leaveAllowance.findMany({
+            where: { year: new Date().getFullYear() },
+            include: { teamMember: { select: { firstName: true, lastName: true } } },
+          }),
+        ])
+
+        return JSON.stringify({
+          requests: requests.map(r => ({
+            id: r.id, member: `${r.teamMember.firstName} ${r.teamMember.lastName}`,
+            dates: `${r.startDate.toISOString().split('T')[0]} to ${r.endDate.toISOString().split('T')[0]}`,
+            days: r.days, type: r.type, status: r.status, reason: r.reason,
+          })),
+          allowances: allowances.map(a => ({
+            member: `${a.teamMember.firstName} ${a.teamMember.lastName}`,
+            total: a.totalDays, used: a.usedDays, remaining: a.totalDays - a.usedDays,
+          })),
+        })
+      }
+
+      case 'approve_leave': {
+        const reqId = input.requestId
+        if (!reqId) return JSON.stringify({ error: 'requestId is required' })
+
+        const req = await prisma.leaveRequest.findUnique({ where: { id: reqId }, include: { teamMember: true } })
+        if (!req) return JSON.stringify({ error: 'Request not found' })
+        if (req.status !== 'PENDING') return JSON.stringify({ error: `Request is already ${req.status}` })
+
+        await prisma.leaveRequest.update({ where: { id: reqId }, data: { status: 'APPROVED', approvedBy: 'Pablo Martin', approvedAt: new Date() } })
+        await prisma.leaveAllowance.updateMany({ where: { teamMemberId: req.teamMemberId, year: new Date().getFullYear() }, data: { usedDays: { increment: req.days } } })
+
+        return JSON.stringify({ success: true, approved: `${req.teamMember.firstName} ${req.teamMember.lastName} — ${req.days} days ${req.type}` })
       }
 
       case 'query_webhook_events': {
