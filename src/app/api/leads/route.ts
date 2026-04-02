@@ -17,6 +17,10 @@ export async function GET() {
       },
       orderBy: { conversionScore: 'desc' },
       take: 100,
+      include: {
+        _count: { select: { visits: true } },
+        visits: { orderBy: { date: 'desc' }, take: 1 },
+      },
     })
 
     const leadsWithScores = leads.map((player) => {
