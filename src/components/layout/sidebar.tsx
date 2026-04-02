@@ -21,6 +21,7 @@ import {
   ClipboardCheck,
   Upload,
   Settings,
+  TrendingUp,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
@@ -43,6 +44,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   ClipboardCheck,
   Upload,
   Settings,
+  TrendingUp,
 }
 
 export function Sidebar() {

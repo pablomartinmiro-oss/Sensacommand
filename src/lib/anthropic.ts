@@ -30,6 +30,8 @@ You have access to these tools:
 20. query_webhook_events — View recent PlayByPoint webhook events
 21. query_leave — Query leave/PTO requests and allowances
 22. approve_leave — Approve a pending leave request
+23. player_savings — Calculate membership savings for a player based on their actual usage
+24. query_referrals — Query referral data, top referrers, log new referrals
 
 When answering:
 - Always query the database first, never guess
@@ -307,6 +309,31 @@ export const AI_TOOLS: Anthropic.Tool[] = [
         eventType: { type: 'string', description: 'Filter by event type (e.g., user_signup, reservation_created)' },
         status: { type: 'string', enum: ['processed', 'failed', 'pending', 'duplicate'] },
         limit: { type: 'number', description: 'Max results (default 10)' },
+      },
+    },
+  },
+  {
+    name: 'player_savings',
+    description: 'Calculate how much a player would save with a membership based on their actual visit frequency. Returns savings for All Access ($200/mo) and Play More ($79/mo).',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        playerId: { type: 'string', description: 'Player ID' },
+        playerName: { type: 'string', description: 'Player name to search for (if no ID)' },
+      },
+    },
+  },
+  {
+    name: 'query_referrals',
+    description: 'Query referral data: top referrers, referral status, or create a new referral',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        action: { type: 'string', enum: ['list', 'top_referrers', 'create'], description: 'Action to perform' },
+        memberId: { type: 'string', description: 'Filter referrals by member ID' },
+        status: { type: 'string', enum: ['PENDING', 'VISITED', 'CONVERTED', 'EXPIRED'] },
+        referrerId: { type: 'string', description: 'Referrer player ID (for create)' },
+        referredId: { type: 'string', description: 'Referred player ID (for create)' },
       },
     },
   },

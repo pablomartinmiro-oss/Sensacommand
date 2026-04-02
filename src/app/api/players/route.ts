@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    const validSortFields = ['createdAt', 'firstName', 'lastName', 'status', 'membershipType']
+    const validSortFields = ['createdAt', 'firstName', 'lastName', 'status', 'membershipType', 'totalVisits', 'lastVisitDate', 'conversionScore']
     const sortField = validSortFields.includes(sort) ? sort : 'createdAt'
     const sortOrder = order === 'asc' ? 'asc' : 'desc'
 
@@ -63,14 +63,6 @@ export async function GET(request: NextRequest) {
         take: limit,
         include: {
           _count: { select: { visits: true, payments: true, messages: true } },
-          visits: {
-            orderBy: { date: 'desc' },
-            take: 1,
-            select: { date: true },
-          },
-          payments: {
-            select: { amount: true },
-          },
         },
       }),
       prisma.player.count({ where }),

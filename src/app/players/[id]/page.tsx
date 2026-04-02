@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { PlayerStats } from '@/components/players/player-stats'
 import { PlayerDetail } from '@/components/players/player-detail'
 import { PlayerForm } from '@/components/players/player-form'
+import { SavingsCalculator } from '@/components/players/savings-calculator'
 import { SkeletonCard } from '@/components/ui/skeleton'
 import {
   STATUS_COLORS,
@@ -119,6 +120,13 @@ export default function PlayerDetailPage() {
 
         {/* Stats Row */}
         <PlayerStats player={player} />
+
+        {/* Savings Calculator (non-members only) */}
+        <SavingsCalculator
+          playerId={player.id}
+          playerName={playerName}
+          membershipType={player.membershipType}
+        />
 
         {/* Detail Tabs */}
         <PlayerDetail player={player} onUpdate={fetchPlayer} />

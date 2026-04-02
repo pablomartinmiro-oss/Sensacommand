@@ -24,6 +24,7 @@ import {
   ClipboardCheck,
   Upload,
   Settings,
+  TrendingUp,
 } from 'lucide-react'
 
 const BOTTOM_TABS = [
@@ -47,6 +48,7 @@ const MORE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   ClipboardCheck,
   Upload,
   Settings,
+  TrendingUp,
 }
 
 const MORE_ITEMS = NAV_ITEMS.filter(

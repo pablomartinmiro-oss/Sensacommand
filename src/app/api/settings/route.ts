@@ -14,6 +14,13 @@ const DEFAULT_SETTINGS: Record<string, unknown> = {
   telegramBotToken: '',
   telegramChatId: '',
   fromEmail: 'noreply@sensapadel.com',
+  // Growth funnel settings
+  checkinAlertThreshold: 60,
+  trialDurationDays: 14,
+  trialPrice: 29,
+  referralRewardAmount: 50,
+  allAccessRate: 200,
+  playMoreRate: 79,
 }
 
 export async function GET() {

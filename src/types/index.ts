@@ -10,6 +10,7 @@ import type {
   Goal,
   TeamMember,
   GoalComment,
+  Referral,
 } from '@/generated/prisma/client'
 
 export type {
@@ -24,6 +25,7 @@ export type {
   Goal,
   TeamMember,
   GoalComment,
+  Referral,
 }
 
 export type PlayerWithRelations = Player & {
@@ -42,7 +44,7 @@ export type PlayerListItem = Player & {
     visits: number
   }
   visits: { date: Date }[]
-  payments: { amount: string | number }[]
+  payments?: { amount: string | number }[]
 }
 
 export interface DashboardStats {
@@ -122,6 +124,21 @@ export interface GoalsSummary {
   overdue: number
   notStarted: number
   done: number
+}
+
+export interface SavingsCalculation {
+  visitsPerMonth: number
+  estimatedMonthlySpend: number
+  savingsAllAccess: number
+  savingsPlayMore: number
+  breakevenAllAccess: number
+  breakevenPlayMore: number
+  recommendation: 'ALL_ACCESS' | 'PLAY_MORE' | 'NOT_YET'
+}
+
+export interface ReferralWithPlayers extends Referral {
+  referrer: Player
+  referred: Player
 }
 
 export interface ApiResponse<T> {

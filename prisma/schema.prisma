@@ -102,15 +102,76 @@ model Player {
   notes               String?        @db.Text
   tags                String[]
 
-  visits          Visit[]
-  payments        Payment[]
-  messages        Message[]
-  linkedGoals     Goal[]           @relation("GoalLinkedPlayers")
-  automationLogs  AutomationLog[]
+  // Trial membership fields
+  trialStartDate  DateTime?
+  trialEndDate    DateTime?
+  trialStatus     String?          // ACTIVE, EXPIRED, CONVERTED, NONE
+
+  // PBP Identity
+  pbpUuid            String?   @unique
+
+  // Visit Summary (REAL data from PBP reports)
+  totalVisits        Int       @default(0)
+  firstVisitDate     DateTime?
+  firstVisitType     String?
+  firstVisitCourt    String?
+  firstVisitProgram  String?
+  lastVisitDate      DateTime?
+  lastVisitType      String?
+  lastVisitCourt     String?
+  lastVisitProgram   String?
+  reservationCount   Int       @default(0)
+
+  // Business Intelligence
+  entryChannel       String?
+  noShowCount        Int       @default(0)
+  rainoutCount       Int       @default(0)
+  cancellationCount  Int       @default(0)
+
+  // Profile
+  rating             Float?
+  gender             String?
+  birthday           DateTime?
+  playerAddress      String?
+  playerCity         String?
+  playerState        String?
+  zipCode            String?
+  pbpTags            String?
+  dateJoined         DateTime?
+
+  // Scoring & Funnel
+  conversionScore    Int       @default(0)
+  funnelStage        String    @default("UNKNOWN")
+
+  visits              Visit[]
+  payments            Payment[]
+  messages            Message[]
+  linkedGoals         Goal[]           @relation("GoalLinkedPlayers")
+  automationLogs      AutomationLog[]
+  referralsGiven      Referral[]       @relation("referrals_given")
+  referralsReceived   Referral[]       @relation("referrals_received")
 
   @@index([status])
   @@index([membershipType])
   @@index([email])
+  @@index([trialStatus])
+}
+
+model Referral {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  referrerId    String
+  referrer      Player   @relation("referrals_given", fields: [referrerId], references: [id])
+  referredId    String
+  referred      Player   @relation("referrals_received", fields: [referredId], references: [id])
+  status        String   @default("PENDING") // PENDING, VISITED, CONVERTED, EXPIRED
+  rewardGiven   Boolean  @default(false)
+  rewardAmount  Decimal?
+  notes         String?
+
+  @@index([referrerId])
+  @@index([referredId])
+  @@index([status])
 }
 
 model Visit {

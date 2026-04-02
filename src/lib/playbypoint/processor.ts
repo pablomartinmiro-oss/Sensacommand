@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { sendTelegramMessage } from '@/lib/telegram'
 import { findOrCreatePlayer, parseCourtNumber, mapMembershipTier, mapPaymentType } from './helpers'
+import { calculateSavings, calculateConversionScore } from '@/lib/funnel/savings'
 
 interface ProcessResult {
   playerId?: string
@@ -185,6 +186,42 @@ async function processCheckIn(data: PBPData): Promise<ProcessResult> {
 
   if (player.status === 'NEW') {
     await prisma.player.update({ where: { id: player.id }, data: { status: 'ACTIVE' } })
+  }
+
+  // Hot prospect check-in alert — use stored Player fields
+  if (player.membershipType === 'NONE') {
+    // Use stored conversionScore or compute from stored fields
+    const score = player.conversionScore || calculateConversionScore({
+      totalVisits: player.totalVisits,
+      lastVisitDate: player.lastVisitDate,
+      createdAt: player.createdAt,
+      membershipType: player.membershipType,
+    })
+
+    if (score >= 60) {
+      const savings = calculateSavings({
+        totalVisits: player.totalVisits,
+        firstVisitDate: player.firstVisitDate,
+        lastVisitDate: player.lastVisitDate,
+        membershipType: player.membershipType,
+      })
+
+      let savingsLine = ''
+      if (savings?.recommendation === 'ALL_ACCESS') {
+        savingsLine = `\n💰 Spending ~$${savings.estimatedMonthlySpend}/mo casual. All Access saves $${savings.savingsAllAccess}/mo.`
+      } else if (savings?.recommendation === 'PLAY_MORE') {
+        savingsLine = `\n💰 Play More saves them $${savings.savingsPlayMore}/mo.`
+      }
+
+      await sendTelegramMessage(
+        `🏠 HOT PROSPECT AT THE CLUB\n\n` +
+        `${player.firstName} ${player.lastName} just checked in\n` +
+        `Score: ${score}/100 · Visit #${player.totalVisits}` +
+        savingsLine +
+        `\n📞 ${player.phone || 'No phone'}\n\n` +
+        `Go say hi and pitch!`
+      )
+    }
   }
 
   return { playerId: player.id, visitId: visit?.id }

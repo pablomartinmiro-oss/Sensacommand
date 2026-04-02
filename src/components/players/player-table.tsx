@@ -75,7 +75,7 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
       if (membershipFilter) params.set('membershipType', membershipFilter)
       params.set('page', String(page))
       params.set('limit', '20')
-      params.set('sort', 'createdAt')
+      params.set('sort', 'lastVisitDate')
       params.set('order', 'desc')
 
       const res = await fetch(`/api/players?${params}`)
@@ -109,15 +109,24 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
   }, [searchInput])
 
   const getLifetimeRevenue = (player: PlayerListItem): number => {
-    return player.payments.reduce(
+    return player.payments?.reduce(
       (sum: number, p: { amount: string | number }) => sum + Number(p.amount),
       0
-    )
+    ) ?? 0
   }
 
   const getLastVisit = (player: PlayerListItem): string => {
-    if (player.visits.length === 0) return 'Never'
-    return formatDate(player.visits[0].date)
+    // Use stored lastVisitDate from PBP, fall back to visits array
+    const p = player as PlayerListItem & { lastVisitDate?: Date | string | null }
+    if (p.lastVisitDate) return formatDate(p.lastVisitDate)
+    if (player.visits?.length > 0) return formatDate(player.visits[0].date)
+    return 'Never'
+  }
+
+  const getVisitCount = (player: PlayerListItem): number => {
+    // Use stored totalVisits from PBP, fall back to _count
+    const p = player as PlayerListItem & { totalVisits?: number }
+    return p.totalVisits ?? player._count?.visits ?? 0
   }
 
   return (
@@ -209,7 +218,7 @@ export function PlayerTable({ refreshKey }: PlayerTableProps) {
                   </span>
                 </TableCell>
                 <TableCell className="text-right">
-                  {player._count.visits}
+                  {getVisitCount(player)}
                 </TableCell>
                 <TableCell className="text-[#6B7280]">
                   {getLastVisit(player)}

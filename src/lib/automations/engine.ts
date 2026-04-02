@@ -8,6 +8,12 @@ import { MembershipExpiring } from './membership-expiring'
 import { ChurnRiskAlert } from './churn-risk-alert'
 import { OverdueGoalsDigest } from './overdue-goals-digest'
 import { WeeklyPerformanceReport } from './weekly-performance-report'
+import { OverpayingAlert } from './overpaying-alert'
+import { SavingsPitch } from './savings-pitch'
+import { TrialMidCheck } from './trial-mid-check'
+import { TrialEndingSoon } from './trial-ending-soon'
+import { TrialExpiredFollowUp } from './trial-expired-followup'
+import { ReferralNudge } from './referral-nudge'
 
 const ALL_AUTOMATIONS: BaseAutomation[] = [
   new WinBack14Day(),
@@ -18,6 +24,12 @@ const ALL_AUTOMATIONS: BaseAutomation[] = [
   new ChurnRiskAlert(),
   new OverdueGoalsDigest(),
   new WeeklyPerformanceReport(),
+  new OverpayingAlert(),
+  new SavingsPitch(),
+  new TrialMidCheck(),
+  new TrialEndingSoon(),
+  new TrialExpiredFollowUp(),
+  new ReferralNudge(),
 ]
 
 export function loadAll(): BaseAutomation[] {

@@ -1,0 +1,30 @@
+-- AlterTable
+ALTER TABLE "Player" ADD COLUMN     "pbpUuid" TEXT,
+ADD COLUMN     "totalVisits" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "firstVisitDate" TIMESTAMP(3),
+ADD COLUMN     "firstVisitType" TEXT,
+ADD COLUMN     "firstVisitCourt" TEXT,
+ADD COLUMN     "firstVisitProgram" TEXT,
+ADD COLUMN     "lastVisitDate" TIMESTAMP(3),
+ADD COLUMN     "lastVisitType" TEXT,
+ADD COLUMN     "lastVisitCourt" TEXT,
+ADD COLUMN     "lastVisitProgram" TEXT,
+ADD COLUMN     "reservationCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "entryChannel" TEXT,
+ADD COLUMN     "noShowCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "rainoutCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "cancellationCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "rating" DOUBLE PRECISION,
+ADD COLUMN     "gender" TEXT,
+ADD COLUMN     "birthday" TIMESTAMP(3),
+ADD COLUMN     "playerAddress" TEXT,
+ADD COLUMN     "playerCity" TEXT,
+ADD COLUMN     "playerState" TEXT,
+ADD COLUMN     "zipCode" TEXT,
+ADD COLUMN     "pbpTags" TEXT,
+ADD COLUMN     "dateJoined" TIMESTAMP(3),
+ADD COLUMN     "conversionScore" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "funnelStage" TEXT NOT NULL DEFAULT 'UNKNOWN';
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Player_pbpUuid_key" ON "Player"("pbpUuid");

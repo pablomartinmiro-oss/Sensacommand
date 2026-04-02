@@ -61,6 +61,12 @@ interface ToolInput {
   eventType?: string
   // Leave tools
   requestId?: string
+  // Savings & referral tools
+  playerName?: string
+  action?: string
+  memberId?: string
+  referrerId?: string
+  referredId?: string
 }
 
 // Types for Prisma query results used in callbacks
@@ -147,41 +153,21 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
           ]
         }
 
+        // Use stored Player fields for visits/scores
+        if (input.minVisits !== undefined) where.totalVisits = { ...(where.totalVisits as object || {}), gte: input.minVisits }
+        if (input.maxVisits !== undefined) where.totalVisits = { ...(where.totalVisits as object || {}), lte: input.maxVisits }
+        if (input.lastVisitBefore) where.lastVisitDate = { ...(where.lastVisitDate as object || {}), lt: new Date(input.lastVisitBefore) }
+        if (input.lastVisitAfter) where.lastVisitDate = { ...(where.lastVisitDate as object || {}), gt: new Date(input.lastVisitAfter) }
+
         const players = await prisma.player.findMany({
           where,
           take: input.limit || 20,
-          include: {
-            _count: { select: { visits: true, payments: true } },
-            visits: { orderBy: { date: 'desc' }, take: 1, select: { date: true } },
-          },
-          orderBy: { createdAt: 'desc' },
+          orderBy: { conversionScore: 'desc' },
         })
 
-        let filtered = players as PlayerWithCounts[]
-        if (input.minVisits !== undefined) {
-          filtered = filtered.filter((p: PlayerWithCounts) => p._count.visits >= (input.minVisits ?? 0))
-        }
-        if (input.maxVisits !== undefined) {
-          filtered = filtered.filter((p: PlayerWithCounts) => p._count.visits <= (input.maxVisits ?? Infinity))
-        }
-        if (input.lastVisitBefore) {
-          const before = new Date(input.lastVisitBefore)
-          filtered = filtered.filter((p: PlayerWithCounts) => {
-            const last = p.visits[0]?.date
-            return last && new Date(last) < before
-          })
-        }
-        if (input.lastVisitAfter) {
-          const after = new Date(input.lastVisitAfter)
-          filtered = filtered.filter((p: PlayerWithCounts) => {
-            const last = p.visits[0]?.date
-            return last && new Date(last) > after
-          })
-        }
-
         return JSON.stringify({
-          count: filtered.length,
-          players: filtered.map((p: PlayerWithCounts) => ({
+          count: players.length,
+          players: players.map((p) => ({
             id: p.id,
             name: `${p.firstName} ${p.lastName}`,
             email: p.email,
@@ -189,9 +175,12 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
             status: p.status,
             membershipType: p.membershipType,
             monthlyRate: p.monthlyRate ? Number(p.monthlyRate) : null,
-            visits: p._count.visits,
-            payments: p._count.payments,
-            lastVisit: p.visits[0]?.date ?? null,
+            totalVisits: p.totalVisits,
+            lastVisit: p.lastVisitDate,
+            entryChannel: p.entryChannel,
+            conversionScore: p.conversionScore,
+            funnelStage: p.funnelStage,
+            firstVisitProgram: p.firstVisitProgram,
             tags: p.tags,
           })),
         })
@@ -836,6 +825,87 @@ async function executeToolCall(name: string, input: ToolInput): Promise<string> 
             enabled: autoData.data.automation.enabled,
           },
         })
+      }
+
+      case 'player_savings': {
+        let player: { id: string; firstName: string; lastName: string; membershipType: string; totalVisits: number; firstVisitDate: Date | null; lastVisitDate: Date | null; entryChannel: string | null; conversionScore: number; funnelStage: string; phone: string | null } | null = null
+        if (input.playerId) {
+          player = await prisma.player.findUnique({ where: { id: input.playerId } })
+        } else if (input.playerName) {
+          const parts = input.playerName.trim().split(/\s+/)
+          const first = parts[0] || ''
+          const last = parts.slice(1).join(' ') || ''
+          player = await prisma.player.findFirst({
+            where: last
+              ? { firstName: { contains: first, mode: 'insensitive' }, lastName: { contains: last, mode: 'insensitive' } }
+              : { OR: [{ firstName: { contains: first, mode: 'insensitive' } }, { lastName: { contains: first, mode: 'insensitive' } }] },
+          })
+        }
+        if (!player) return JSON.stringify({ error: 'Player not found' })
+
+        const { calculateSavings } = await import('@/lib/funnel/savings')
+        const savings = calculateSavings({
+          totalVisits: player.totalVisits,
+          firstVisitDate: player.firstVisitDate,
+          lastVisitDate: player.lastVisitDate,
+          membershipType: player.membershipType,
+        })
+
+        return JSON.stringify({
+          player: `${player.firstName} ${player.lastName}`,
+          membershipType: player.membershipType,
+          totalVisits: player.totalVisits,
+          entryChannel: player.entryChannel,
+          conversionScore: player.conversionScore,
+          funnelStage: player.funnelStage,
+          phone: player.phone,
+          savings: savings || { note: 'Not enough data or already a member' },
+        })
+      }
+
+      case 'query_referrals': {
+        if (input.action === 'create') {
+          if (!input.referrerId || !input.referredId) {
+            return JSON.stringify({ error: 'referrerId and referredId required' })
+          }
+          const referral = await prisma.referral.create({
+            data: { referrerId: input.referrerId, referredId: input.referredId },
+            include: {
+              referrer: { select: { firstName: true, lastName: true } },
+              referred: { select: { firstName: true, lastName: true } },
+            },
+          })
+          return JSON.stringify({ created: true, referral })
+        }
+
+        if (input.action === 'top_referrers') {
+          const counts = await prisma.referral.groupBy({
+            by: ['referrerId'], _count: true,
+            orderBy: { _count: { referrerId: 'desc' } }, take: 10,
+          })
+          const ids = counts.map(c => c.referrerId)
+          const players = await prisma.player.findMany({
+            where: { id: { in: ids } },
+            select: { id: true, firstName: true, lastName: true },
+          })
+          return JSON.stringify(counts.map(c => {
+            const p = players.find(pl => pl.id === c.referrerId)
+            return { name: p ? `${p.firstName} ${p.lastName}` : 'Unknown', count: c._count, id: c.referrerId }
+          }))
+        }
+
+        // Default: list
+        const where: Record<string, unknown> = {}
+        if (input.memberId) where.referrerId = input.memberId
+        if (input.status) where.status = input.status
+        const refs = await prisma.referral.findMany({
+          where, take: 20, orderBy: { createdAt: 'desc' },
+          include: {
+            referrer: { select: { firstName: true, lastName: true } },
+            referred: { select: { firstName: true, lastName: true, status: true } },
+          },
+        })
+        return JSON.stringify({ count: refs.length, referrals: refs })
       }
 
       default:

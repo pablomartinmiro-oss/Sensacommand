@@ -10,14 +10,16 @@ interface PlayerStatsProps {
 }
 
 export function PlayerStats({ player }: PlayerStatsProps) {
-  const totalVisits = player.visits.length
+  // Use stored totalVisits from PBP data, fall back to visits array length
+  const totalVisits = player.totalVisits || player.visits.length
   const totalRevenue = player.payments.reduce(
     (sum: number, p: (typeof player.payments)[number]) => sum + Number(p.amount),
     0
   )
 
-  // Calculate avg visits per month
-  const memberSince = new Date(player.createdAt)
+  // Calculate avg visits per month using stored dates
+  const startDate = player.firstVisitDate || player.createdAt
+  const memberSince = new Date(startDate)
   const now = new Date()
   const monthsActive = Math.max(
     1,

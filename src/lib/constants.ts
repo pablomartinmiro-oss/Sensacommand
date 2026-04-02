@@ -118,6 +118,7 @@ export const NAV_ITEMS = [
   { label: 'Revenue', href: '/revenue', icon: 'DollarSign' },
   { label: 'Players', href: '/players', icon: 'Users' },
   { label: 'Leads', href: '/leads', icon: 'Target' },
+  { label: 'Funnel', href: '/funnel', icon: 'TrendingUp' },
   { label: 'Members', href: '/members', icon: 'Crown' },
   { label: 'Courts', href: '/courts', icon: 'Grid3X3' },
   { label: 'Goals', href: '/goals', icon: 'Crosshair' },

@@ -14,7 +14,6 @@ export async function GET(request: NextRequest) {
 
   try {
     const now = new Date()
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
     const fourteenDaysFromNow = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000)
 
     // Base where clause: only active members
@@ -29,18 +28,11 @@ export async function GET(request: NextRequest) {
     const members = await prisma.player.findMany({
       where: memberWhere,
       include: {
-        visits: {
-          select: { date: true, id: true },
-          orderBy: { date: 'desc' },
-        },
         payments: {
           where: { type: 'MEMBERSHIP' },
           select: { amount: true, date: true },
           orderBy: { date: 'desc' },
           take: 1,
-        },
-        _count: {
-          select: { visits: true },
         },
       },
       orderBy: { lastName: 'asc' },
@@ -48,13 +40,9 @@ export async function GET(request: NextRequest) {
 
     type MemberRow = typeof members[number]
 
-    // Calculate visit stats for each member
+    // Calculate visit stats using Player fields (totalVisits, lastVisitDate)
     const enrichedMembers = members.map((member: MemberRow) => {
-      const visitsThisMonth = member.visits.filter(
-        (v: { date: Date; id: string }) => new Date(v.date) >= thirtyDaysAgo
-      ).length
-
-      const totalVisits = member.visits.length
+      const totalVisits = member.totalVisits
       const memberSinceDays = member.membershipStartDate
         ? Math.floor(
             (now.getTime() - new Date(member.membershipStartDate).getTime()) /
@@ -64,18 +52,15 @@ export async function GET(request: NextRequest) {
       const monthsActive = Math.max(1, Math.floor(memberSinceDays / 30))
       const avgVisitsPerMonth = Math.round((totalVisits / monthsActive) * 10) / 10
 
-      const lastVisitDate =
-        member.visits.length > 0 ? new Date(member.visits[0].date) : null
+      const lastVisitDate = member.lastVisitDate ? new Date(member.lastVisitDate) : null
       const daysSinceLastVisit = lastVisitDate
         ? Math.floor(
             (now.getTime() - lastVisitDate.getTime()) / (1000 * 60 * 60 * 24)
           )
         : 999
 
-      // Churn risk: visits this month < 50% of average OR no visit in 14+ days
-      const isChurnRisk =
-        (avgVisitsPerMonth > 0 && visitsThisMonth < avgVisitsPerMonth * 0.5) ||
-        daysSinceLastVisit >= 14
+      // Churn risk: no visit in 30+ days
+      const isChurnRisk = daysSinceLastVisit >= 30
 
       const isUpcomingRenewal =
         member.membershipEndDate &&
@@ -84,7 +69,7 @@ export async function GET(request: NextRequest) {
 
       return {
         ...member,
-        visitsThisMonth,
+        visitsThisMonth: 0, // Will grow from webhook data
         avgVisitsPerMonth,
         daysSinceLastVisit,
         isChurnRisk,
