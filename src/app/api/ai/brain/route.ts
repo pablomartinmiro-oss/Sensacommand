@@ -5,7 +5,11 @@ import { sensaBrainTools } from '@/lib/ai-brain-tools'
 
 export const maxDuration = 60
 
-const BRAIN_SYSTEM_PROMPT = `You are Sensa Brain — the AI command center for Sensa Padel, a 6-court padel club in Nashville, TN (Neuhoff district).
+function getBrainSystemPrompt() {
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Chicago' })
+  return `Today is ${today}.
+
+You are Sensa Brain — the AI command center for Sensa Padel, a 6-court padel club in Nashville, TN (Neuhoff district).
 
 You help the GM (Pablo) run the business by querying live data and delivering clear, actionable answers.
 
@@ -23,6 +27,7 @@ TEAM: Pablo Martin (GM), Aditya Khilnani (Ops), Marcus Y (Pro Shop), Arianna Gil
 MEMBERSHIP TIERS: Unlimited ($350/mo), Standard ($200/mo, 8 sessions), Casual ($40/visit)
 
 You have 9 tools for querying players, revenue, members, leads, visits, courts, goals, team status, and raw SQL. Use them liberally.`
+}
 
 export async function POST(req: Request) {
   const session = await auth()
@@ -35,7 +40,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: anthropic('claude-sonnet-4-20250514'),
-    system: BRAIN_SYSTEM_PROMPT,
+    system: getBrainSystemPrompt(),
     messages: modelMessages,
     tools: sensaBrainTools,
     stopWhen: stepCountIs(8),
