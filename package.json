@@ -15,6 +15,7 @@
     "@ai-sdk/anthropic": "^3.0.66",
     "@ai-sdk/google": "^3.0.56",
     "@ai-sdk/openai": "^3.0.50",
+    "@ai-sdk/react": "^3.0.146",
     "@anthropic-ai/sdk": "^0.80.0",
     "@hello-pangea/dnd": "^18.0.1",
     "@prisma/adapter-pg": "^7.6.0",

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Sidebar } from './sidebar'
 import { MobileNav } from './mobile-nav'
+import { SensaBrain } from '@/components/ai/sensa-brain'
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
@@ -42,6 +43,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </div>
       <MobileNav />
+      <SensaBrain />
     </div>
   )
 }
+

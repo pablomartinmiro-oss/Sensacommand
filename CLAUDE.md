@@ -122,3 +122,9 @@ Pablo Martin (GM), Aditya Khilnani (Operations), Marcus Y (Pro Shop), Arianna Gi
 ## Business Context
 
 Sensa Padel — 6-court padel club in Nashville, TN. Membership tiers: Standard ($200/mo), Unlimited ($350/mo). Revenue target: $45k/mo. Communication: casual, bilingual, WhatsApp-first. Peak hours: 5-9pm.
+
+## Deployment
+
+- **NEVER run locally.** Project is on Railway (auto-deploys on push).
+- **Live URL:** sensacommand-production.up.railway.app
+- **To deploy:** `git push` (Railway builds automatically)
