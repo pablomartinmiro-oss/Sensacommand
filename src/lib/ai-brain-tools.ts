@@ -356,20 +356,20 @@ export const teamStatus = tool({
             { lastName: { contains: input.teamMember, mode: 'insensitive' as const } },
           ] }
         : { isActive: true },
-      include: { goals: { select: { status: true, priority: true, dueDate: true } } },
+      include: { assignedGoals: { select: { status: true, priority: true, dueDate: true } } },
     })
 
     const now = new Date()
     type TM = (typeof members)[number]
-    type Goal = TM['goals'][number]
+    type Goal = TM['assignedGoals'][number]
     return {
       team: members.map((m: TM) => ({
         name: `${m.firstName} ${m.lastName}`,
         role: m.role,
-        total: m.goals.length,
-        done: m.goals.filter((g: Goal) => g.status === 'DONE').length,
-        inProgress: m.goals.filter((g: Goal) => g.status === 'IN_PROGRESS').length,
-        overdue: m.goals.filter((g: Goal) => g.dueDate && g.dueDate < now && !['DONE', 'ON_HOLD'].includes(g.status)).length,
+        total: m.assignedGoals.length,
+        done: m.assignedGoals.filter((g: Goal) => g.status === 'DONE').length,
+        inProgress: m.assignedGoals.filter((g: Goal) => g.status === 'IN_PROGRESS').length,
+        overdue: m.assignedGoals.filter((g: Goal) => g.dueDate && g.dueDate < now && !['DONE', 'ON_HOLD'].includes(g.status)).length,
       })),
     }
   },
